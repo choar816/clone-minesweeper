@@ -1,6 +1,7 @@
-import styled from "styled-components";
+import { useSelector, useDispatch } from "react-redux";
 import { Board } from "./components/Board";
 import { NumberDisplay } from "./components/NumberDisplay";
+import styled from "styled-components";
 import "./style.css";
 
 function App() {

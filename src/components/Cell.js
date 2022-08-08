@@ -1,8 +1,15 @@
 import styled from "styled-components";
 
 export const Cell = ({ isClicked, isFlagged, isMine, minesAround }) => {
-  if (!isClicked) return <div>🤫</div>;
-  if (isFlagged) return <div>🚩</div>;
-  if (isMine) return <div>💣</div>;
-  return <div>{minesAround}</div>;
+  if (!isClicked) return <Div>🤫</Div>;
+  if (isFlagged) return <Div>🚩</Div>;
+  if (isMine) return <Div>💣</Div>;
+  return <Div>{minesAround}</Div>;
 };
+
+const Div = styled.div`
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  user-select: none;
+`;
