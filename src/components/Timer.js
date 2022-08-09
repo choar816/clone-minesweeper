@@ -3,15 +3,21 @@ import { useSelector } from "react-redux";
 import styled from "styled-components";
 
 export const Timer = () => {
-  const { isStarted } = useSelector((state) => state.game);
+  const { isStarted, isLost, isWon } = useSelector((state) => state.game);
   const [seconds, setSeconds] = useState(0);
   useEffect(() => {
-    if (!isStarted) return;
+    if (isLost || isWon) {
+      return;
+    }
+    if (!isStarted) {
+      setSeconds(0);
+      return;
+    }
     let countdown = setInterval(() => {
-      setSeconds(parseInt(seconds) + 1);
+      setSeconds(seconds + 1);
     }, 1000);
     return () => clearInterval(countdown);
-  }, [isStarted, seconds]);
+  }, [isStarted, isLost, isWon, seconds]);
 
   return <Div>{seconds.toString().padStart(3, "0")}</Div>;
 };

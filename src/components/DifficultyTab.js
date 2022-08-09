@@ -10,6 +10,7 @@ export const DifficultyTab = () => {
 
   const DIFFICULTIES = ["beginner", "intermediate", "expert"];
   const [difficultyIndex, setDifficultyIndex] = useState(0);
+
   return (
     <Container difficultyIndex={difficultyIndex}>
       {DIFFICULTIES.map((difficultyString, index) => {
@@ -19,6 +20,7 @@ export const DifficultyTab = () => {
             onClick={() => {
               setDifficultyIndex(index);
               dispatch(changeDifficulty(difficultyString));
+              console.log(difficulty);
               dispatch(createEmptyBoard(difficulty));
               dispatch(plantMines(difficulty));
               dispatch(getMinesNeighbor(difficulty));

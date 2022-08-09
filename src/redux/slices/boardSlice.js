@@ -63,10 +63,12 @@ export const boardSlice = createSlice({
         }
       }
     },
+    // cell을 여는 action
     revealCell: (state, action) => {
       const { y, x } = action.payload;
       state.boardArray[y][x].isRevealed = true;
     },
+    // cell에 우클릭 했을 때 기능을 처리하는 action
     handleCellRightClick: (state, action) => {
       const { y, x, isRevealed, isFlagged, isQuestionable } = action.payload;
       if (isRevealed) {
@@ -86,4 +88,5 @@ export const boardSlice = createSlice({
   },
 });
 
-export const { createEmptyBoard, plantMines, getMinesNeighbor, revealCell, handleCellRightClick } = boardSlice.actions;
+export const { createEmptyBoard, plantMines, getMinesNeighbor, revealCell, handleCellRightClick } =
+  boardSlice.actions;

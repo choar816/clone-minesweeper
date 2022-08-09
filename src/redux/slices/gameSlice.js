@@ -15,7 +15,12 @@ export const gameSlice = createSlice({
       state.isStarted = false;
       state.isWon = true;
     },
+    resetGame: (state, action) => {
+      state.isStarted = false;
+      state.isWon = false;
+      state.isLost = false;
+    },
   },
 });
 
-export const { startGame, loseGame, winGame } = gameSlice.actions;
+export const { startGame, loseGame, winGame, resetGame } = gameSlice.actions;

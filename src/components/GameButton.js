@@ -1,9 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
-import {
-  createEmptyBoard,
-  getMinesNeighbor,
-  plantMines,
-} from "../redux/slices/boardSlice";
+import { createEmptyBoard, getMinesNeighbor, plantMines } from "../redux/slices/boardSlice";
+import { resetGame } from "../redux/slices/gameSlice";
 
 export const GameButton = () => {
   const dispatch = useDispatch();
@@ -13,6 +10,7 @@ export const GameButton = () => {
     dispatch(createEmptyBoard(difficulty));
     dispatch(plantMines(difficulty));
     dispatch(getMinesNeighbor(difficulty));
+    dispatch(resetGame());
     console.log("initialized!");
   };
 
