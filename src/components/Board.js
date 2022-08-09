@@ -1,12 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  createEmptyBoard,
-  plantMines,
-  getMinesNeighbor,
-  clickCell,
-  flagCell,
-} from "../redux/slices/boardSlice";
+import { createEmptyBoard, plantMines, getMinesNeighbor, clickCell, flagCell } from "../redux/slices/boardSlice";
 import styled from "styled-components";
 
 const getCellContent = ({ isClicked, isFlagged, isMine, minesNeighbor }) => {
@@ -50,13 +44,7 @@ export const Board = () => {
       for (let i = 0; i < 8; i++) {
         const ny = pos.y + dy[i];
         const nx = pos.x + dx[i];
-        if (
-          0 <= ny &&
-          ny < height &&
-          0 <= nx &&
-          nx < width &&
-          !boardArray[ny][nx].isClicked
-        ) {
+        if (0 <= ny && ny < height && 0 <= nx && nx < width && !boardArray[ny][nx].isClicked) {
           dispatch(clickCell({ y: ny, x: nx }));
           if (boardArray[ny][nx].minesNeighbor === 0) {
             positions.push({ y: ny, x: nx });

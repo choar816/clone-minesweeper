@@ -54,13 +54,7 @@ export const boardSlice = createSlice({
           for (let i = 0; i < 8; i++) {
             const ny = y + dy[i];
             const nx = x + dx[i];
-            if (
-              0 <= ny &&
-              ny < height &&
-              0 <= nx &&
-              nx < width &&
-              state.boardArray[ny][nx].isMine
-            ) {
+            if (0 <= ny && ny < height && 0 <= nx && nx < width && state.boardArray[ny][nx].isMine) {
               minesNeighbor += 1;
             }
           }
@@ -79,10 +73,4 @@ export const boardSlice = createSlice({
   },
 });
 
-export const {
-  createEmptyBoard,
-  plantMines,
-  getMinesNeighbor,
-  clickCell,
-  flagCell,
-} = boardSlice.actions;
+export const { createEmptyBoard, plantMines, getMinesNeighbor, clickCell, flagCell } = boardSlice.actions;
