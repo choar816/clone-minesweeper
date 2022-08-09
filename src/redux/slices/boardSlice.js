@@ -7,13 +7,13 @@ export const boardSlice = createSlice({
   reducers: {
     createEmptyBoard: (state, action) => {
       const { width, height } = action.payload;
-      let data = [];
+      let newArray = [];
       for (let i = 0; i < height; i++) {
-        data.push([]);
+        newArray.push([]);
         for (let j = 0; j < width; j++) {
-          data[i][j] = {
-            x: i,
-            y: j,
+          newArray[i][j] = {
+            y: i,
+            x: j,
             isClicked: false,
             isMine: false,
             isFlagged: false,
@@ -21,53 +21,52 @@ export const boardSlice = createSlice({
           };
         }
       }
-      state.boardArray = data;
+      state.boardArray = newArray;
     },
     plantMines: (state, action) => {
       const { width, height, mine } = action.payload;
       let minesPlanted = 0;
       while (minesPlanted < mine) {
-        let x = getRandomNumber(0, width);
         let y = getRandomNumber(0, height);
-        if (!state.boardArray[x][y].isMine) {
-          state.boardArray[x][y].isMine = true;
+        let x = getRandomNumber(0, width);
+        if (!state.boardArray[y][x].isMine) {
+          state.boardArray[y][x].isMine = true;
           minesPlanted += 1;
         }
       }
     },
     getMinesNeighbor: (state, action) => {
       const { width, height } = action.payload;
-      const dx = [0, 0, 1, 1, 1, -1, -1, -1];
       const dy = [1, -1, 0, 1, -1, 0, 1, -1];
+      const dx = [0, 0, 1, 1, 1, -1, -1, -1];
 
-      for (let x = 0; x < width; x++) {
-        for (let y = 0; y < height; y++) {
-          if (state.boardArray[x][y].isMine) {
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          if (state.boardArray[y][x].isMine) {
             continue;
           }
 
           let minesNeighbor = 0;
           for (let i = 0; i < 8; i++) {
-            const nx = x + dx[i];
             const ny = y + dy[i];
+            const nx = x + dx[i];
             if (
-              0 <= nx &&
-              nx < width &&
               0 <= ny &&
               ny < height &&
-              state.boardArray[nx][ny].isMine
+              0 <= nx &&
+              nx < width &&
+              state.boardArray[ny][nx].isMine
             ) {
               minesNeighbor += 1;
             }
           }
-          state.boardArray[x][y].minesNeighbor = minesNeighbor;
-          // console.log(state.boardArray[x][y].minesNeightbor);
+          state.boardArray[y][x].minesNeighbor = minesNeighbor;
         }
       }
     },
     clickCell: (state, action) => {
-      const { x, y } = action.payload;
-      state.boardArray[x][y].isClicked = true;
+      const { y, x } = action.payload;
+      state.boardArray[y][x].isClicked = true;
     },
   },
 });

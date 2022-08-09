@@ -3,6 +3,7 @@ import { Board } from "./components/Board";
 import { NumberDisplay } from "./components/NumberDisplay";
 import styled from "styled-components";
 import "./style.css";
+import { DifficultyTab } from "./components/DifficultyTab";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
           <NumberDisplay />
         </GameHeader>
         <Board />
+        <DifficultyTab />
       </GameContainer>
     </main>
   );

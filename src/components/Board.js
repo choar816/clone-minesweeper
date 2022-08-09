@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   createEmptyBoard,
@@ -6,20 +6,36 @@ import {
   getMinesNeighbor,
   clickCell,
 } from "../redux/slices/boardSlice";
-import { getCellContent } from "./Cell";
 import { changeDifficulty } from "../redux/slices/difficultySlice";
 import styled from "styled-components";
+
+const getCellContent = ({ isClicked, isFlagged, isMine, minesNeighbor }) => {
+  // if (!isClicked) return "🤫";
+  if (isFlagged) return "🚩";
+  if (isMine) return "💣";
+  // if (minesNeighbor === 0) return "";
+  return `${minesNeighbor}`;
+};
 
 export const Board = () => {
   const dispatch = useDispatch();
   const difficulty = useSelector((state) => state.difficulty);
   const boardArray = useSelector((state) => state.board.boardArray);
+  const [isFirstClick, setIsFirstClick] = useState(true);
 
   const initializeBoard = () => {
     dispatch(createEmptyBoard(difficulty));
     dispatch(plantMines(difficulty));
     dispatch(getMinesNeighbor(difficulty));
+    console.log("initialized!");
   };
+
+  // const makeBoardWithNoMineAt = ({ y, x }) => {
+  //   console.log("makeBoardWithNoMineAt");
+  //   do {
+  //     initializeBoard();
+  //   } while (boardArray[y][x].isMine);
+  // };
 
   useEffect(() => {
     initializeBoard();
@@ -34,8 +50,14 @@ export const Board = () => {
               <Cell
                 key={`cell_${rowIndex}_${colIndex}`}
                 onClick={() => {
+                  if (isFirstClick && boardCell.isMine) {
+                    // makeBoardWithNoMineAt(boardCell);
+                    // return;
+                  }
                   dispatch(clickCell(boardCell));
+                  setIsFirstClick(false);
                 }}
+                {...boardCell}
               >
                 {getCellContent(boardCell)}
               </Cell>
@@ -45,7 +67,7 @@ export const Board = () => {
       </Container>
       <button
         onClick={() => {
-          initializeBoard(difficulty);
+          initializeBoard();
         }}
       >
         button
@@ -73,4 +95,9 @@ const Cell = styled.div`
   &:hover {
     background-color: gray;
   }
+  ${({ isClicked }) =>
+    !isClicked &&
+    `
+    background-color: pink;
+  `}
 `;
