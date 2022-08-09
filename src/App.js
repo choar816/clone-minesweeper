@@ -1,19 +1,19 @@
-import { useSelector, useDispatch } from "react-redux";
 import { Board } from "./components/Board";
-import { NumberDisplay } from "./components/NumberDisplay";
-import styled from "styled-components";
-import "./style.css";
+import { MinesLeft } from "./components/MinesLeft";
+import { Timer } from "./components/Timer";
 import { DifficultyTab } from "./components/DifficultyTab";
 import { GameButton } from "./components/GameButton";
+import styled from "styled-components";
+import "./style.css";
 
 function App() {
   return (
     <main>
       <GameContainer>
         <GameHeader>
-          <NumberDisplay />
+          <MinesLeft />
           <GameButton />
-          <NumberDisplay />
+          <Timer />
         </GameHeader>
         <Board />
         <DifficultyTab />

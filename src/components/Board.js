@@ -7,7 +7,7 @@ import {
   revealCell,
   handleCellRightClick,
 } from "../redux/slices/boardSlice";
-import { loseGame } from "../redux/slices/gameSlice";
+import { loseGame, startGame } from "../redux/slices/gameSlice";
 import styled from "styled-components";
 
 const getCellContent = ({ isRevealed, isFlagged, isQuestionable, isMine, minesNeighbor }) => {
@@ -23,7 +23,7 @@ export const Board = () => {
   const dispatch = useDispatch();
   const difficulty = useSelector((state) => state.difficulty);
   const boardArray = useSelector((state) => state.board.boardArray);
-  const { isLost, isWon } = useSelector((state) => state.game);
+  const { isStarted, isLost, isWon } = useSelector((state) => state.game);
   const [isFirstClick, setIsFirstClick] = useState(true);
 
   const initializeBoard = () => {
@@ -72,8 +72,9 @@ export const Board = () => {
     if (isLost || isWon) {
       return;
     }
-    // 첫 번째 클릭인데 mine일 경우
-    if (isFirstClick && isMine) {
+    // 첫 번째 클릭일 경우
+    if (!isStarted) {
+      dispatch(startGame());
       // makeBoardWithNoMineAt(boardCell);
       // return;
     }
@@ -103,7 +104,7 @@ export const Board = () => {
   }, []);
 
   return (
-    <Container col={difficulty.width} row={difficulty.height}>
+    <Container col={width} row={height}>
       {boardArray.map((boardRow, rowIndex) => {
         return boardRow.map((boardCell, colIndex) => {
           return (
