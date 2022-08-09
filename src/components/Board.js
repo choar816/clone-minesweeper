@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { createEmptyBoard, plantMines, getMinesNeighbor, revealCell, handleCellRightClick } from "../redux/slices/boardSlice";
+import {
+  createEmptyBoard,
+  plantMines,
+  getMinesNeighbor,
+  revealCell,
+  handleCellRightClick,
+} from "../redux/slices/boardSlice";
+import { loseGame } from "../redux/slices/gameSlice";
 import styled from "styled-components";
 
 const getCellContent = ({ isRevealed, isFlagged, isQuestionable, isMine, minesNeighbor }) => {
@@ -16,6 +23,7 @@ export const Board = () => {
   const dispatch = useDispatch();
   const difficulty = useSelector((state) => state.difficulty);
   const boardArray = useSelector((state) => state.board.boardArray);
+  const { isLost, isWon } = useSelector((state) => state.game);
   const [isFirstClick, setIsFirstClick] = useState(true);
 
   const initializeBoard = () => {
@@ -60,6 +68,9 @@ export const Board = () => {
   };
 
   const onCellLeftClick = (e, cellInfo) => {
+    if (isLost || isWon) {
+      return;
+    }
     const { y, x, isMine, minesNeighbor } = cellInfo;
     // 첫 번째 클릭인데 mine일 경우
     if (isFirstClick && isMine) {
@@ -67,11 +78,13 @@ export const Board = () => {
       // return;
     }
     dispatch(revealCell({ y, x }));
-    setIsFirstClick(false);
+    // setIsFirstClick(false);
     if (isMine) {
       console.log("GAME OVER");
+      dispatch(loseGame());
       return;
     }
+    // 빈칸을 클릭했을 경우 bfs로 빈칸 및 인접한 칸을 모두 reveal함
     if (minesNeighbor === 0) {
       bfs({ y, x });
     }
@@ -79,6 +92,9 @@ export const Board = () => {
 
   const onCellRightClick = (e, cellInfo) => {
     e.preventDefault();
+    if (isLost || isWon) {
+      return;
+    }
     const { isRevealed } = cellInfo;
     if (isRevealed) {
       return;
@@ -131,9 +147,6 @@ const Cell = styled.div`
   background-color: #e6e6e6;
   user-select: none;
 
-  &:hover {
-    background-color: gray;
-  }
   ${({ isRevealed }) =>
     !isRevealed &&
     `
