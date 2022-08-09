@@ -1,8 +1,7 @@
 import { useSelector, useDispatch } from "react-redux";
-import { store } from "../store";
-import styled from "styled-components";
-import { createEmptyBoard } from "../boardSlice";
+import { createEmptyBoard } from "../redux/slices/boardSlice";
 import { Cell } from "./Cell";
+import styled from "styled-components";
 
 const DIFFICULTY = {
   beginner: {

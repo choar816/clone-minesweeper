@@ -12,4 +12,8 @@ const Div = styled.div`
   width: 30px;
   height: 30px;
   user-select: none;
+
+  &:hover {
+    background-color: #e6e6e6;
+  }
 `;
