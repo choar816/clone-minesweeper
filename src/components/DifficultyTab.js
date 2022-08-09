@@ -15,6 +15,7 @@ export const DifficultyTab = () => {
       {DIFFICULTIES.map((difficultyString, index) => {
         return (
           <button
+            key={difficultyString}
             onClick={() => {
               setDifficultyIndex(index);
               dispatch(changeDifficulty(difficultyString));

@@ -7,14 +7,13 @@ import {
   clickCell,
   flagCell,
 } from "../redux/slices/boardSlice";
-import { changeDifficulty } from "../redux/slices/difficultySlice";
 import styled from "styled-components";
 
 const getCellContent = ({ isClicked, isFlagged, isMine, minesNeighbor }) => {
   // if (!isClicked) return "🤫";
   if (isFlagged) return "🚩";
   if (isMine) return "💣";
-  // if (minesNeighbor === 0) return "";
+  if (minesNeighbor === 0) return "";
   return `${minesNeighbor}`;
 };
 
@@ -38,14 +37,60 @@ export const Board = () => {
   //   } while (boardArray[y][x].isMine);
   // };
 
+  const { height, width } = difficulty;
+  const bfs = (positions) => {
+    console.log("bfs");
+    const dy = [1, -1, 0, 1, -1, 0, 1, -1];
+    const dx = [0, 0, 1, 1, 1, -1, -1, -1];
+    if (positions.length > 100) return;
+
+    let nextPositions = [];
+    // for (const { y, x } of positions) {
+    //   if (boardArray[y][x].minesNeighbor === 0) {
+    //     nextPositions.push({ y, x });
+    //   }
+    // }
+    // bfs(nextPositions);
+
+    while (positions.length) {
+      let pos = positions.shift();
+      for (let i = 0; i < 8; i++) {
+        const ny = pos.y + dy[i];
+        const nx = pos.x + dx[i];
+        if (
+          0 <= ny &&
+          ny < height &&
+          0 <= nx &&
+          nx < width &&
+          !boardArray[ny][nx].isClicked
+        ) {
+          dispatch(clickCell({ y: ny, x: nx }));
+          if (boardArray[ny][nx].minesNeighbor === 0) {
+            nextPositions.push({ y: ny, x: nx });
+          }
+        }
+      }
+    }
+    console.log(nextPositions);
+    bfs([...nextPositions]);
+  };
+
   const onCellLeftClick = (e, cellInfo) => {
+    const { y, x, isMine, minesNeighbor } = cellInfo;
     // 첫 번째 클릭인데 mine일 경우
-    if (isFirstClick && cellInfo.isMine) {
+    if (isFirstClick && isMine) {
       // makeBoardWithNoMineAt(boardCell);
       // return;
     }
-    dispatch(clickCell(cellInfo));
+    dispatch(clickCell({ y, x }));
     setIsFirstClick(false);
+    if (isMine) {
+      console.log("GAME OVER");
+      return;
+    }
+    if (minesNeighbor === 0) {
+      bfs([{ y, x }]);
+    }
   };
 
   const onCellRightClick = (e, cellInfo) => {

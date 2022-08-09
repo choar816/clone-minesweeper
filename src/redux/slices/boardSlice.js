@@ -5,6 +5,7 @@ export const boardSlice = createSlice({
   name: "boardSlice",
   initialState: { boardArray: [] },
   reducers: {
+    // 빈 board를 난이도별 크기에 맞게 만드는 action
     createEmptyBoard: (state, action) => {
       const { width, height } = action.payload;
       let newArray = [];
@@ -23,6 +24,7 @@ export const boardSlice = createSlice({
       }
       state.boardArray = newArray;
     },
+    // board에 지뢰를 난이도별 지뢰 개수게 맞게 심는 action
     plantMines: (state, action) => {
       const { width, height, mine } = action.payload;
       let minesPlanted = 0;
@@ -35,6 +37,8 @@ export const boardSlice = createSlice({
         }
       }
     },
+    // board를 처음부터 끝까지 훑으며, 지뢰가 없는 칸의 경우
+    // 인접한(가로, 세로, 대각선) 칸에 있는 지뢰의 개수를 기록하는 action
     getMinesNeighbor: (state, action) => {
       const { width, height } = action.payload;
       const dy = [1, -1, 0, 1, -1, 0, 1, -1];
