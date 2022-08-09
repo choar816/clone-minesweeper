@@ -5,6 +5,7 @@ import {
   plantMines,
   getMinesNeighbor,
   clickCell,
+  flagCell,
 } from "../redux/slices/boardSlice";
 import { changeDifficulty } from "../redux/slices/difficultySlice";
 import styled from "styled-components";
@@ -37,42 +38,50 @@ export const Board = () => {
   //   } while (boardArray[y][x].isMine);
   // };
 
+  const onCellLeftClick = (e, cellInfo) => {
+    // 첫 번째 클릭인데 mine일 경우
+    if (isFirstClick && cellInfo.isMine) {
+      // makeBoardWithNoMineAt(boardCell);
+      // return;
+    }
+    dispatch(clickCell(cellInfo));
+    setIsFirstClick(false);
+  };
+
+  const onCellRightClick = (e, cellInfo) => {
+    e.preventDefault();
+    const { isClicked } = cellInfo;
+    if (isClicked) {
+      return;
+    }
+    dispatch(flagCell(cellInfo));
+  };
+
   useEffect(() => {
     initializeBoard();
   }, []);
 
   return (
-    <>
-      <Container col={difficulty.width} row={difficulty.height}>
-        {boardArray.map((boardRow, rowIndex) => {
-          return boardRow.map((boardCell, colIndex) => {
-            return (
-              <Cell
-                key={`cell_${rowIndex}_${colIndex}`}
-                onClick={() => {
-                  if (isFirstClick && boardCell.isMine) {
-                    // makeBoardWithNoMineAt(boardCell);
-                    // return;
-                  }
-                  dispatch(clickCell(boardCell));
-                  setIsFirstClick(false);
-                }}
-                {...boardCell}
-              >
-                {getCellContent(boardCell)}
-              </Cell>
-            );
-          });
-        })}
-      </Container>
-      <button
-        onClick={() => {
-          initializeBoard();
-        }}
-      >
-        button
-      </button>
-    </>
+    <Container col={difficulty.width} row={difficulty.height}>
+      {boardArray.map((boardRow, rowIndex) => {
+        return boardRow.map((boardCell, colIndex) => {
+          return (
+            <Cell
+              key={`cell_${rowIndex}_${colIndex}`}
+              onClick={(e) => {
+                onCellLeftClick(e, boardCell);
+              }}
+              onContextMenu={(e) => {
+                onCellRightClick(e, boardCell);
+              }}
+              {...boardCell}
+            >
+              {getCellContent(boardCell)}
+            </Cell>
+          );
+        });
+      })}
+    </Container>
   );
 };
 

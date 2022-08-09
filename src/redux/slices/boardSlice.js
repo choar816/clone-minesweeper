@@ -68,8 +68,17 @@ export const boardSlice = createSlice({
       const { y, x } = action.payload;
       state.boardArray[y][x].isClicked = true;
     },
+    flagCell: (state, action) => {
+      const { y, x } = action.payload;
+      state.boardArray[y][x].isFlagged = !state.boardArray[y][x].isFlagged;
+    },
   },
 });
 
-export const { createEmptyBoard, plantMines, getMinesNeighbor, clickCell } =
-  boardSlice.actions;
+export const {
+  createEmptyBoard,
+  plantMines,
+  getMinesNeighbor,
+  clickCell,
+  flagCell,
+} = boardSlice.actions;
