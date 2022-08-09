@@ -1,3 +1,3 @@
 export const NumberDisplay = () => {
-  return <div>NumberDisplay</div>;
+  return <div>000</div>;
 };

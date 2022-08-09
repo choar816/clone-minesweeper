@@ -4,6 +4,7 @@ import { NumberDisplay } from "./components/NumberDisplay";
 import styled from "styled-components";
 import "./style.css";
 import { DifficultyTab } from "./components/DifficultyTab";
+import { GameButton } from "./components/GameButton";
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
       <GameContainer>
         <GameHeader>
           <NumberDisplay />
+          <GameButton />
           <NumberDisplay />
         </GameHeader>
         <Board />
@@ -23,12 +25,14 @@ function App() {
 export default App;
 
 const GameContainer = styled.section`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   border: 1px solid #000;
   padding: 10px;
 `;
 
 const GameHeader = styled.article`
-  margin-bottom: 10px;
   display: flex;
   justify-content: space-between;
 `;

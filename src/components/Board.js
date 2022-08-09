@@ -87,10 +87,11 @@ const Cell = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 30px;
-  user-select: none;
+  width: 20px;
+  height: 20px;
+  font-size: 12px;
   background-color: #e6e6e6;
+  user-select: none;
 
   &:hover {
     background-color: gray;
