@@ -17,7 +17,7 @@ export const boardSlice = createSlice({
             isClicked: false,
             isMine: false,
             isFlagged: false,
-            mineNeighbor: 0,
+            minesNeighbor: 0,
           };
         }
       }
@@ -35,6 +35,35 @@ export const boardSlice = createSlice({
         }
       }
     },
+    getMinesNeighbor: (state, action) => {
+      const { width, height } = action.payload;
+      const dx = [0, 0, 1, 1, 1, -1, -1, -1];
+      const dy = [1, -1, 0, 1, -1, 0, 1, -1];
+
+      for (let x = 0; x < width; x++) {
+        for (let y = 0; y < height; y++) {
+          if (state.boardArray[x][y].isMine) {
+            continue;
+          }
+
+          let minesNeightbor = 0;
+          for (let i = 0; i < 8; i++) {
+            const nx = x + dx[i];
+            const ny = y + dy[i];
+            if (
+              0 <= nx &&
+              nx < width &&
+              0 <= ny &&
+              ny < height &&
+              state.boardArray[nx][ny].isMine
+            ) {
+              minesNeightbor += 1;
+            }
+          }
+          state.boardArray[x][y].minesNeightbor = minesNeightbor;
+        }
+      }
+    },
     clickCell: (state, action) => {
       const { x, y } = action.payload;
       state.boardArray[x][y].isClicked = true;
@@ -42,4 +71,5 @@ export const boardSlice = createSlice({
   },
 });
 
-export const { createEmptyBoard, plantMines, clickCell } = boardSlice.actions;
+export const { createEmptyBoard, plantMines, getMinesNeighbor, clickCell } =
+  boardSlice.actions;

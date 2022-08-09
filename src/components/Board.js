@@ -1,37 +1,28 @@
+import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   createEmptyBoard,
   plantMines,
+  getMinesNeighbor,
   clickCell,
 } from "../redux/slices/boardSlice";
 import { getCellContent } from "./Cell";
+import { changeDifficulty } from "../redux/slices/difficultySlice";
 import styled from "styled-components";
-import { useEffect } from "react";
-
-const DIFFICULTY = {
-  beginner: {
-    width: 8,
-    height: 8,
-    mine: 10,
-  },
-  intermediate: {
-    width: 16,
-    height: 16,
-    mine: 40,
-  },
-  expert: {
-    width: 32,
-    height: 16,
-    mine: 99,
-  },
-};
 
 export const Board = () => {
   const dispatch = useDispatch();
   const boardArray = useSelector((state) => state.board.boardArray);
+  const difficulty = useSelector((state) => state.difficulty);
+
+  const initializeBoard = () => {
+    dispatch(createEmptyBoard(difficulty));
+    dispatch(plantMines(difficulty));
+    dispatch(getMinesNeighbor(difficulty));
+  };
 
   useEffect(() => {
-    dispatch(createEmptyBoard(DIFFICULTY.beginner));
+    initializeBoard();
   }, []);
 
   return (
@@ -42,13 +33,12 @@ export const Board = () => {
             <>
               <Cell
                 onClick={() => {
-                  console.log("clicked cell");
                   dispatch(clickCell(boardCell));
                 }}
               >
                 {getCellContent(boardCell)}
               </Cell>
-              {colIndex === DIFFICULTY.beginner.width - 1 && <br />}
+              {colIndex === difficulty.width - 1 && <br />}
             </>
           );
         });
@@ -56,10 +46,10 @@ export const Board = () => {
       <br />
       <button
         onClick={() => {
-          dispatch(plantMines(DIFFICULTY.beginner));
+          initializeBoard(difficulty);
         }}
       >
-        plant mines
+        button
       </button>
     </Container>
   );

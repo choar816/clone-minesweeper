@@ -4,19 +4,19 @@ export const difficultySlice = createSlice({
   name: "difficultySlice",
   initialState: { width: 8, height: 8, mine: 10 },
   reducers: {
-    change: (state, action) => {
+    changeDifficulty: (state, action) => {
       switch (action.payload) {
-        case "Beginner":
+        case "beginner":
           state.width = 8;
           state.height = 8;
           state.mine = 10;
           break;
-        case "Intermediate":
+        case "intermediate":
           state.width = 16;
           state.height = 16;
           state.mine = 40;
           break;
-        case "Expert":
+        case "expert":
           state.width = 32;
           state.height = 16;
           state.mine = 99;
@@ -31,4 +31,4 @@ export const difficultySlice = createSlice({
   },
 });
 
-export const { change } = difficultySlice.actions;
+export const { changeDifficulty } = difficultySlice.actions;
