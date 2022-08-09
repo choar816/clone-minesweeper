@@ -46,7 +46,7 @@ export const boardSlice = createSlice({
             continue;
           }
 
-          let minesNeightbor = 0;
+          let minesNeighbor = 0;
           for (let i = 0; i < 8; i++) {
             const nx = x + dx[i];
             const ny = y + dy[i];
@@ -57,10 +57,11 @@ export const boardSlice = createSlice({
               ny < height &&
               state.boardArray[nx][ny].isMine
             ) {
-              minesNeightbor += 1;
+              minesNeighbor += 1;
             }
           }
-          state.boardArray[x][y].minesNeightbor = minesNeightbor;
+          state.boardArray[x][y].minesNeighbor = minesNeighbor;
+          // console.log(state.boardArray[x][y].minesNeightbor);
         }
       }
     },
