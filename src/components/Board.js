@@ -68,10 +68,10 @@ export const Board = () => {
   };
 
   const onCellLeftClick = (e, cellInfo) => {
+    const { y, x, isMine, minesNeighbor } = cellInfo;
     if (isLost || isWon) {
       return;
     }
-    const { y, x, isMine, minesNeighbor } = cellInfo;
     // 첫 번째 클릭인데 mine일 경우
     if (isFirstClick && isMine) {
       // makeBoardWithNoMineAt(boardCell);
@@ -92,11 +92,7 @@ export const Board = () => {
 
   const onCellRightClick = (e, cellInfo) => {
     e.preventDefault();
-    if (isLost || isWon) {
-      return;
-    }
-    const { isRevealed } = cellInfo;
-    if (isRevealed) {
+    if (isLost || isWon || cellInfo.isRevealed) {
       return;
     }
     dispatch(handleCellRightClick(cellInfo));

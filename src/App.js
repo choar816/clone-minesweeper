@@ -27,12 +27,14 @@ export default App;
 const GameContainer = styled.section`
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 10px;
   border: 1px solid #000;
   padding: 10px;
 `;
 
 const GameHeader = styled.article`
+  width: 100%;
   display: flex;
   justify-content: space-between;
 `;
