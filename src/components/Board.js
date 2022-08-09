@@ -42,17 +42,10 @@ export const Board = () => {
     console.log("bfs");
     const dy = [1, -1, 0, 1, -1, 0, 1, -1];
     const dx = [0, 0, 1, 1, 1, -1, -1, -1];
-    if (positions.length > 100) return;
-
-    let nextPositions = [];
-    // for (const { y, x } of positions) {
-    //   if (boardArray[y][x].minesNeighbor === 0) {
-    //     nextPositions.push({ y, x });
-    //   }
-    // }
-    // bfs(nextPositions);
 
     while (positions.length) {
+      if (positions.length > 50) break;
+      console.log(positions);
       let pos = positions.shift();
       for (let i = 0; i < 8; i++) {
         const ny = pos.y + dy[i];
@@ -66,13 +59,12 @@ export const Board = () => {
         ) {
           dispatch(clickCell({ y: ny, x: nx }));
           if (boardArray[ny][nx].minesNeighbor === 0) {
-            nextPositions.push({ y: ny, x: nx });
+            positions.push({ y: ny, x: nx });
           }
         }
       }
     }
-    console.log(nextPositions);
-    bfs([...nextPositions]);
+    console.log("bfs end");
   };
 
   const onCellLeftClick = (e, cellInfo) => {
