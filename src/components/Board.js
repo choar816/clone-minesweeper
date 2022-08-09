@@ -32,27 +32,30 @@ export const Board = () => {
   // };
 
   const { height, width } = difficulty;
-  const bfs = (positions) => {
-    console.log("bfs");
+  const bfs = (position) => {
     const dy = [1, -1, 0, 1, -1, 0, 1, -1];
     const dx = [0, 0, 1, 1, 1, -1, -1, -1];
 
-    while (positions.length) {
-      if (positions.length > 50) break;
-      console.log(positions);
-      let pos = positions.shift();
+    const queue = [position];
+    const visited = new Set([JSON.stringify(position)]);
+
+    while (queue.length) {
+      let { y, x } = queue.shift();
+
+      if (boardArray[y][x].isMine || boardArray[y][x].isFlagged) continue;
+      dispatch(clickCell({ y, x }));
+      if (boardArray[y][x].minesNeighbor !== 0) continue;
+
       for (let i = 0; i < 8; i++) {
-        const ny = pos.y + dy[i];
-        const nx = pos.x + dx[i];
-        if (0 <= ny && ny < height && 0 <= nx && nx < width && !boardArray[ny][nx].isClicked) {
-          dispatch(clickCell({ y: ny, x: nx }));
-          if (boardArray[ny][nx].minesNeighbor === 0) {
-            positions.push({ y: ny, x: nx });
-          }
+        const ny = y + dy[i];
+        const nx = x + dx[i];
+        const next_pos = { y: ny, x: nx };
+        if (0 <= ny && ny < height && 0 <= nx && nx < width && !visited.has(JSON.stringify(next_pos))) {
+          queue.push(next_pos);
+          visited.add(JSON.stringify(next_pos));
         }
       }
     }
-    console.log("bfs end");
   };
 
   const onCellLeftClick = (e, cellInfo) => {
@@ -69,7 +72,7 @@ export const Board = () => {
       return;
     }
     if (minesNeighbor === 0) {
-      bfs([{ y, x }]);
+      bfs({ y, x });
     }
   };
 
