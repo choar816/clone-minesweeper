@@ -26,24 +26,24 @@ export const Board = () => {
   }, []);
 
   return (
-    <Container>
-      {boardArray.map((boardRow, rowIndex) => {
-        return boardRow.map((boardCell, colIndex) => {
-          return (
-            <>
-              <Cell
-                onClick={() => {
-                  dispatch(clickCell(boardCell));
-                }}
-              >
-                {getCellContent(boardCell)}
-              </Cell>
-              {colIndex === difficulty.width - 1 && <br />}
-            </>
-          );
-        });
-      })}
-      <br />
+    <>
+      <Container col={difficulty.width} row={difficulty.height}>
+        {boardArray.map((boardRow, rowIndex) => {
+          return boardRow.map((boardCell, colIndex) => {
+            return (
+              <>
+                <Cell
+                  onClick={() => {
+                    dispatch(clickCell(boardCell));
+                  }}
+                >
+                  {getCellContent(boardCell)}
+                </Cell>
+              </>
+            );
+          });
+        })}
+      </Container>
       <button
         onClick={() => {
           initializeBoard(difficulty);
@@ -51,19 +51,27 @@ export const Board = () => {
       >
         button
       </button>
-    </Container>
+    </>
   );
 };
 
-const Container = styled.section``;
+const Container = styled.section`
+  display: grid;
+  grid-template-columns: repeat(${({ col }) => col}, 1fr);
+  grid-template-rows: repeat(${({ row }) => row}, 1fr);
+  gap: 5px;
+`;
 
 const Cell = styled.div`
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 30px;
   height: 30px;
   user-select: none;
+  background-color: #e6e6e6;
 
   &:hover {
-    background-color: #e6e6e6;
+    background-color: gray;
   }
 `;

@@ -26,6 +26,7 @@ const GameContainer = styled.section`
 `;
 
 const GameHeader = styled.article`
+  margin-bottom: 10px;
   display: flex;
   justify-content: space-between;
 `;
