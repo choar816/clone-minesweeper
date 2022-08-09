@@ -44,13 +44,17 @@ export const DifficultyTab = () => {
 
 const Container = styled.article`
   display: flex;
+  gap: 5px;
   button {
-    border: 1px solid black;
-    background-color: paleturquoise;
+    background-color: #474747;
+    color: #fff;
+    border: none;
+    padding: 3px 5px;
+    border-radius: 3px;
 
     ${({ difficultyIndex }) => `
     &:nth-child(${difficultyIndex + 1}) {
-      background-color: gray;
+      background-color: #4687ff;
     }`}
   }
 `;

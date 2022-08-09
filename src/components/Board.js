@@ -140,12 +140,11 @@ const Cell = styled.div`
   width: 20px;
   height: 20px;
   font-size: 12px;
-  background-color: #e6e6e6;
-  user-select: none;
+  background-color: #caddff;
 
   ${({ isRevealed }) =>
     !isRevealed &&
     `
-    background-color: pink;
+    background-color: #ccc;
   `}
 `;

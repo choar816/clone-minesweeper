@@ -29,12 +29,16 @@ const GameContainer = styled.section`
   flex-direction: column;
   align-items: center;
   gap: 10px;
-  border: 1px solid #000;
   padding: 10px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: rgb(0 0 0 / 10%) 0px 0px 10px 5px;
+  user-select: none;
 `;
 
 const GameHeader = styled.article`
   width: 100%;
   display: flex;
   justify-content: space-between;
+  align-items: center;
 `;
