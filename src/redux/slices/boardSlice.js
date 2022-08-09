@@ -15,9 +15,10 @@ export const boardSlice = createSlice({
           newArray[i][j] = {
             y: i,
             x: j,
-            isClicked: false,
+            isRevealed: false,
             isMine: false,
             isFlagged: false,
+            isQuestionable: false,
             minesNeighbor: 0,
           };
         }
@@ -62,15 +63,27 @@ export const boardSlice = createSlice({
         }
       }
     },
-    clickCell: (state, action) => {
+    revealCell: (state, action) => {
       const { y, x } = action.payload;
-      state.boardArray[y][x].isClicked = true;
+      state.boardArray[y][x].isRevealed = true;
     },
-    flagCell: (state, action) => {
-      const { y, x } = action.payload;
-      state.boardArray[y][x].isFlagged = !state.boardArray[y][x].isFlagged;
+    handleCellRightClick: (state, action) => {
+      const { y, x, isRevealed, isFlagged, isQuestionable } = action.payload;
+      if (isRevealed) {
+        return;
+      }
+      if (isFlagged) {
+        state.boardArray[y][x].isFlagged = false;
+        state.boardArray[y][x].isQuestionable = true;
+        return;
+      }
+      if (isQuestionable) {
+        state.boardArray[y][x].isQuestionable = false;
+        return;
+      }
+      state.boardArray[y][x].isFlagged = true;
     },
   },
 });
 
-export const { createEmptyBoard, plantMines, getMinesNeighbor, clickCell, flagCell } = boardSlice.actions;
+export const { createEmptyBoard, plantMines, getMinesNeighbor, revealCell, handleCellRightClick } = boardSlice.actions;

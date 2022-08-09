@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { createEmptyBoard, plantMines, getMinesNeighbor, clickCell, flagCell } from "../redux/slices/boardSlice";
+import { createEmptyBoard, plantMines, getMinesNeighbor, revealCell, handleCellRightClick } from "../redux/slices/boardSlice";
 import styled from "styled-components";
 
-const getCellContent = ({ isClicked, isFlagged, isMine, minesNeighbor }) => {
-  // if (!isClicked) return "🤫";
+const getCellContent = ({ isRevealed, isFlagged, isQuestionable, isMine, minesNeighbor }) => {
+  // if (!isRevealed) return "🤫";
   if (isFlagged) return "🚩";
+  if (isQuestionable) return "?";
   if (isMine) return "💣";
   if (minesNeighbor === 0) return "";
   return `${minesNeighbor}`;
@@ -43,7 +44,7 @@ export const Board = () => {
       let { y, x } = queue.shift();
 
       if (boardArray[y][x].isMine || boardArray[y][x].isFlagged) continue;
-      dispatch(clickCell({ y, x }));
+      dispatch(revealCell({ y, x }));
       if (boardArray[y][x].minesNeighbor !== 0) continue;
 
       for (let i = 0; i < 8; i++) {
@@ -65,7 +66,7 @@ export const Board = () => {
       // makeBoardWithNoMineAt(boardCell);
       // return;
     }
-    dispatch(clickCell({ y, x }));
+    dispatch(revealCell({ y, x }));
     setIsFirstClick(false);
     if (isMine) {
       console.log("GAME OVER");
@@ -78,11 +79,11 @@ export const Board = () => {
 
   const onCellRightClick = (e, cellInfo) => {
     e.preventDefault();
-    const { isClicked } = cellInfo;
-    if (isClicked) {
+    const { isRevealed } = cellInfo;
+    if (isRevealed) {
       return;
     }
-    dispatch(flagCell(cellInfo));
+    dispatch(handleCellRightClick(cellInfo));
   };
 
   useEffect(() => {
@@ -133,8 +134,8 @@ const Cell = styled.div`
   &:hover {
     background-color: gray;
   }
-  ${({ isClicked }) =>
-    !isClicked &&
+  ${({ isRevealed }) =>
+    !isRevealed &&
     `
     background-color: pink;
   `}
