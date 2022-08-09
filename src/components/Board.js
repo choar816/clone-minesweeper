@@ -12,8 +12,8 @@ import styled from "styled-components";
 
 export const Board = () => {
   const dispatch = useDispatch();
-  const boardArray = useSelector((state) => state.board.boardArray);
   const difficulty = useSelector((state) => state.difficulty);
+  const boardArray = useSelector((state) => state.board.boardArray);
 
   const initializeBoard = () => {
     dispatch(createEmptyBoard(difficulty));
@@ -31,15 +31,14 @@ export const Board = () => {
         {boardArray.map((boardRow, rowIndex) => {
           return boardRow.map((boardCell, colIndex) => {
             return (
-              <>
-                <Cell
-                  onClick={() => {
-                    dispatch(clickCell(boardCell));
-                  }}
-                >
-                  {getCellContent(boardCell)}
-                </Cell>
-              </>
+              <Cell
+                key={`cell_${rowIndex}_${colIndex}`}
+                onClick={() => {
+                  dispatch(clickCell(boardCell));
+                }}
+              >
+                {getCellContent(boardCell)}
+              </Cell>
             );
           });
         })}
