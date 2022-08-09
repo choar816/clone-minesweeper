@@ -1,7 +1,12 @@
 import { useSelector, useDispatch } from "react-redux";
-import { createEmptyBoard } from "../redux/slices/boardSlice";
-import { Cell } from "./Cell";
+import {
+  createEmptyBoard,
+  plantMines,
+  clickCell,
+} from "../redux/slices/boardSlice";
+import { getCellContent } from "./Cell";
 import styled from "styled-components";
+import { useEffect } from "react";
 
 const DIFFICULTY = {
   beginner: {
@@ -25,13 +30,24 @@ export const Board = () => {
   const dispatch = useDispatch();
   const boardArray = useSelector((state) => state.board.boardArray);
 
+  useEffect(() => {
+    dispatch(createEmptyBoard(DIFFICULTY.beginner));
+  }, []);
+
   return (
     <Container>
       {boardArray.map((boardRow, rowIndex) => {
         return boardRow.map((boardCell, colIndex) => {
           return (
             <>
-              <Cell {...boardCell} />
+              <Cell
+                onClick={() => {
+                  console.log("clicked cell");
+                  dispatch(clickCell(boardCell));
+                }}
+              >
+                {getCellContent(boardCell)}
+              </Cell>
               {colIndex === DIFFICULTY.beginner.width - 1 && <br />}
             </>
           );
@@ -40,14 +56,24 @@ export const Board = () => {
       <br />
       <button
         onClick={() => {
-          dispatch(createEmptyBoard(DIFFICULTY.beginner));
-          console.log(boardArray);
+          dispatch(plantMines(DIFFICULTY.beginner));
         }}
       >
-        create empty board
+        plant mines
       </button>
     </Container>
   );
 };
 
 const Container = styled.section``;
+
+const Cell = styled.div`
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  user-select: none;
+
+  &:hover {
+    background-color: #e6e6e6;
+  }
+`;
