@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createEmptyBoard, getMinesNeighbor, plantMines } from "../redux/slices/boardSlice";
 import { changeDifficulty } from "../redux/slices/difficultySlice";
+import { resetGame } from "../redux/slices/gameSlice";
 import styled from "styled-components";
 
 export const DifficultyTab = () => {
@@ -14,6 +15,7 @@ export const DifficultyTab = () => {
     dispatch(createEmptyBoard(difficulty));
     dispatch(plantMines(difficulty));
     dispatch(getMinesNeighbor(difficulty));
+    dispatch(resetGame());
   };
 
   useEffect(() => {

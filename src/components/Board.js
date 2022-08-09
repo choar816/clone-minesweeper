@@ -30,7 +30,6 @@ export const Board = () => {
     dispatch(createEmptyBoard(difficulty));
     dispatch(plantMines(difficulty));
     dispatch(getMinesNeighbor(difficulty));
-    console.log("initialized!");
   };
 
   // const makeBoardWithNoMineAt = ({ y, x }) => {

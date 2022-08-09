@@ -11,7 +11,6 @@ export const GameButton = () => {
     dispatch(plantMines(difficulty));
     dispatch(getMinesNeighbor(difficulty));
     dispatch(resetGame());
-    console.log("initialized!");
   };
 
   return <button onClick={initializeBoard}>button</button>;
