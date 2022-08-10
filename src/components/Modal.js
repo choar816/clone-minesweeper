@@ -18,7 +18,6 @@ export const Modal = ({ isModalOn, setIsModalOn }) => {
     setDifficultyObject((obj) => {
       return { ...obj, [e.target.name]: parseInt(e.target.value, 10) };
     });
-    // console.log(difficultyObject);
   };
 
   const onButtonClick = () => {

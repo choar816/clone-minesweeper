@@ -5,7 +5,6 @@ import { DifficultyTab } from "./components/DifficultyTab";
 import { GameButton } from "./components/GameButton";
 import styled from "styled-components";
 import "./style.css";
-import { Modal } from "./components/Modal";
 
 function App() {
   return (

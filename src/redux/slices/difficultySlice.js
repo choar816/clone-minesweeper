@@ -9,7 +9,7 @@ export const difficultySlice = createSlice({
         case "beginner":
           state.width = 8;
           state.height = 8;
-          state.mine = 1;
+          state.mine = 10;
           break;
         case "intermediate":
           state.width = 16;
