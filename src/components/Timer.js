@@ -6,7 +6,7 @@ export const Timer = () => {
   const { isStarted, isLost, isWon } = useSelector((state) => state.game);
   const [seconds, setSeconds] = useState(0);
   useEffect(() => {
-    if (isLost || isWon) {
+    if (isLost || isWon || seconds === 999) {
       return;
     }
     if (!isStarted) {
