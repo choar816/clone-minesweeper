@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 export const gameSlice = createSlice({
   name: "gameSlice",
-  initialState: { isStarted: false, isLost: false, isWon: false },
+  initialState: { isStarted: false, isLost: false, isWon: false, isClicking: false },
   reducers: {
     startGame: (state, action) => {
       state.isStarted = true;
@@ -20,7 +20,10 @@ export const gameSlice = createSlice({
       state.isWon = false;
       state.isLost = false;
     },
+    checkIsClicking: (state, action) => {
+      state.isClicking = action.payload;
+    },
   },
 });
 
-export const { startGame, loseGame, winGame, resetGame } = gameSlice.actions;
+export const { startGame, loseGame, winGame, resetGame, checkIsClicking } = gameSlice.actions;

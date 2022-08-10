@@ -9,7 +9,7 @@ import {
   handleCellRightClick,
   bfsCells,
 } from "../redux/slices/boardSlice";
-import { loseGame, startGame, winGame } from "../redux/slices/gameSlice";
+import { checkIsClicking, loseGame, startGame, winGame } from "../redux/slices/gameSlice";
 import styled from "styled-components";
 
 const getCellContent = ({ isRevealed, isFlagged, isQuestionable, isMine, minesNeighbor }) => {
@@ -92,7 +92,16 @@ export const Board = () => {
   };
 
   return (
-    <Container col={width} row={height}>
+    <Container
+      col={width}
+      row={height}
+      onMouseDown={() => {
+        dispatch(checkIsClicking(true));
+      }}
+      onMouseUp={() => {
+        dispatch(checkIsClicking(false));
+      }}
+    >
       {boardArray.map((boardRow, rowIndex) => {
         return boardRow.map((boardCell, colIndex) => {
           return (

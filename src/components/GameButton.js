@@ -6,7 +6,7 @@ import { resetGame } from "../redux/slices/gameSlice";
 export const GameButton = () => {
   const dispatch = useDispatch();
   const difficulty = useSelector((state) => state.difficulty);
-  const { isLost, isWon } = useSelector((state) => state.game);
+  const { isLost, isWon, isClicking } = useSelector((state) => state.game);
 
   const [emoji, setEmoji] = useState("🙂");
   useEffect(() => {
@@ -18,8 +18,12 @@ export const GameButton = () => {
       setEmoji("🥳");
       return;
     }
+    if (isClicking) {
+      setEmoji("😮");
+      return;
+    }
     setEmoji("🙂");
-  }, [isLost, isWon]);
+  }, [isLost, isWon, isClicking]);
 
   const initializeBoard = () => {
     dispatch(createEmptyBoard(difficulty));
