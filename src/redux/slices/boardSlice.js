@@ -19,6 +19,7 @@ export const boardSlice = createSlice({
             isMine: false,
             isFlagged: false,
             isQuestionable: false,
+            didBust: false,
             minesNeighbor: 0,
           };
         }
@@ -125,6 +126,11 @@ export const boardSlice = createSlice({
         }
       }
     },
+    // 게임오버를 하게 만든 지뢰를 표시
+    indicateBust: (state, action) => {
+      const { y, x } = action.payload;
+      state.boardArray[y][x].didBust = true;
+    },
     // cell에 우클릭 했을 때 기능을 처리하는 action
     handleCellRightClick: (state, action) => {
       const { y, x, isRevealed, isFlagged, isQuestionable } = action.payload;
@@ -154,6 +160,7 @@ export const {
   moveOneMine,
   revealCell,
   revealAllMines,
+  indicateBust,
   handleCellRightClick,
   bfsCells,
 } = boardSlice.actions;

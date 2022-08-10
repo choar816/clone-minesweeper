@@ -7,6 +7,7 @@ import {
   moveOneMine,
   revealCell,
   revealAllMines,
+  indicateBust,
   handleCellRightClick,
   bfsCells,
 } from "../redux/slices/boardSlice";
@@ -16,7 +17,7 @@ import styled from "styled-components";
 const getCellContent = ({ isRevealed, isFlagged, isQuestionable, isMine, minesNeighbor }) => {
   if (isFlagged) return "🚩";
   if (isQuestionable) return "?";
-  // if (!isRevealed) return "🤫";
+  // if (!isRevealed) return "";
   if (isMine) return "💣";
   if (minesNeighbor === 0) return "";
   return `${minesNeighbor}`;
@@ -81,6 +82,7 @@ export const Board = () => {
       // 지뢰를 클릭했을 경우 : 게임오버
       if (isMine) {
         dispatch(loseGame());
+        dispatch(indicateBust({ y, x }));
         dispatch(revealAllMines({ height, width }));
       }
     }
@@ -131,21 +133,26 @@ const Container = styled.section`
   display: grid;
   grid-template-columns: repeat(${({ col }) => col}, 1fr);
   grid-template-rows: repeat(${({ row }) => row}, 1fr);
-  gap: 5px;
 `;
 
-const Cell = styled.div`
+const Cell = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
+  width: 25px;
+  height: 25px;
   font-size: 12px;
-  background-color: #caddff;
+  background-color: #ccc;
 
   ${({ isRevealed }) =>
-    !isRevealed &&
+    isRevealed &&
     `
-    background-color: #ccc;
+    background-color: #caddff;
+    border: 1px solid #000;
+  `}
+  ${({ didBust }) =>
+    didBust &&
+    `
+    background-color: red;
   `}
 `;
