@@ -64,6 +64,49 @@ export const boardSlice = createSlice({
         }
       }
     },
+    // 특정 cell부터 bfs를 수행하는 action
+    bfsCells: (state, action) => {
+      const dy = [1, -1, 0, 1, -1, 0, 1, -1];
+      const dx = [0, 0, 1, 1, 1, -1, -1, -1];
+
+      const { y, x, height, width } = action.payload;
+      const queue = [{ y, x }];
+      const visited = new Set([JSON.stringify({ y, x })]);
+
+      while (queue.length) {
+        let { y, x } = queue.shift();
+        const { isMine, isFlagged, isQuestionable, isRevealed, minesNeighbor } = state.boardArray[y][x];
+        if (isMine || isFlagged || isQuestionable || isRevealed) continue;
+        state.boardArray[y][x].isRevealed = true;
+        state.revealedCells += 1;
+        if (minesNeighbor !== 0) continue;
+
+        for (let i = 0; i < 8; i++) {
+          const ny = y + dy[i];
+          const nx = x + dx[i];
+          const next_pos = { y: ny, x: nx };
+          if (0 <= ny && ny < height && 0 <= nx && nx < width && !visited.has(JSON.stringify(next_pos))) {
+            queue.push(next_pos);
+            visited.add(JSON.stringify(next_pos));
+          }
+        }
+      }
+    },
+    // 지뢰 하나를 옮겨심는 action
+    moveOneMine: (state, action) => {
+      const { y, x, height, width } = action.payload;
+      let candidates = [];
+      for (let i = 0; i < height; ++i) {
+        for (let j = 0; j < width; ++j) {
+          if (!state.boardArray[i][j].isMine) {
+            candidates.push({ y: i, x: j });
+          }
+        }
+      }
+      const nextPos = candidates[getRandomNumber(0, candidates.length)];
+      state.boardArray[y][x].isMine = false;
+      state.boardArray[nextPos.y][nextPos.x].isMine = true;
+    },
     // cell을 여는 action
     revealCell: (state, action) => {
       const { y, x } = action.payload;
@@ -90,4 +133,12 @@ export const boardSlice = createSlice({
   },
 });
 
-export const { createEmptyBoard, plantMines, getMinesNeighbor, revealCell, handleCellRightClick } = boardSlice.actions;
+export const {
+  createEmptyBoard,
+  plantMines,
+  getMinesNeighbor,
+  moveOneMine,
+  revealCell,
+  handleCellRightClick,
+  bfsCells,
+} = boardSlice.actions;

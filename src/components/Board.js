@@ -1,11 +1,13 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   createEmptyBoard,
   plantMines,
   getMinesNeighbor,
+  moveOneMine,
   revealCell,
   handleCellRightClick,
+  bfsCells,
 } from "../redux/slices/boardSlice";
 import { loseGame, startGame, winGame } from "../redux/slices/gameSlice";
 import styled from "styled-components";
@@ -26,75 +28,6 @@ export const Board = () => {
   const { boardArray, revealedCells } = useSelector((state) => state.board);
   const { isStarted, isLost, isWon } = useSelector((state) => state.game);
 
-  const bfs = (position) => {
-    const dy = [1, -1, 0, 1, -1, 0, 1, -1];
-    const dx = [0, 0, 1, 1, 1, -1, -1, -1];
-
-    const queue = [position];
-    const visited = new Set([JSON.stringify(position)]);
-
-    while (queue.length) {
-      let { y, x } = queue.shift();
-      const { isMine, isFlagged, isQuestionable, isRevealed, minesNeighbor } = boardArray[y][x];
-      if (isMine || isFlagged || isQuestionable || isRevealed) continue;
-      dispatch(revealCell({ y, x }));
-      if (minesNeighbor !== 0) continue;
-
-      for (let i = 0; i < 8; i++) {
-        const ny = y + dy[i];
-        const nx = x + dx[i];
-        const next_pos = { y: ny, x: nx };
-        if (0 <= ny && ny < height && 0 <= nx && nx < width && !visited.has(JSON.stringify(next_pos))) {
-          queue.push(next_pos);
-          visited.add(JSON.stringify(next_pos));
-        }
-      }
-    }
-  };
-
-  const onCellLeftClick = (boardCell) => {
-    const { y, x, isMine, isRevealed, isFlagged, isQuestionable, minesNeighbor } = boardCell;
-
-    // 게임이 끝난 경우(지거나 이긴 경우) or cell이 이미 눌렸거나 깃발 또는 물음표인 경우 :
-    // cell을 눌러도 아무 효과가 없음
-    if (isLost || isWon || isRevealed || isFlagged || isQuestionable) {
-      return;
-    }
-
-    // 첫 번째 클릭일 경우
-    if (!isStarted) {
-      if (isMine) {
-        // TODO: Fix error
-        // do {
-        //   initializeBoard();
-        // } while (boardArray[y][x].isMine);
-        // return;
-      }
-      dispatch(startGame());
-    }
-
-    // 지뢰가 없고, 이웃한 지뢰도 없는 칸을 클릭했을 경우 :
-    // bfs로 빈칸 및 인접한 칸을 모두 reveal함
-    if (!isMine && minesNeighbor === 0) {
-      bfs({ y, x });
-    }
-    // 지뢰가 있거나, 이웃한 지뢰가 있는 칸 클릭 : 해당 칸만 reveal
-    else {
-      dispatch(revealCell(boardCell));
-      // 지뢰를 클릭했을 경우 : 게임오버
-      if (isMine) {
-        dispatch(loseGame());
-      }
-    }
-  };
-
-  const onCellRightClick = (cellInfo) => {
-    if (isLost || isWon || cellInfo.isRevealed) {
-      return;
-    }
-    dispatch(handleCellRightClick(cellInfo));
-  };
-
   const initializeBoard = () => {
     dispatch(createEmptyBoard(difficulty));
     dispatch(plantMines(difficulty));
@@ -114,6 +47,49 @@ export const Board = () => {
   useEffect(() => {
     checkWin();
   }, [revealedCells]);
+
+  const onCellLeftClick = (boardCell) => {
+    let { y, x, isMine, isRevealed, isFlagged, isQuestionable, minesNeighbor } = boardCell;
+
+    // 게임이 끝난 경우(지거나 이긴 경우) or cell이 이미 눌렸거나 깃발 또는 물음표인 경우 :
+    // cell을 눌러도 아무 효과가 없음
+    if (isLost || isWon || isRevealed || isFlagged || isQuestionable) {
+      return;
+    }
+
+    // 첫 번째 클릭일 경우
+    if (!isStarted) {
+      // 지뢰를 누른 경우 해당 칸의 지뢰를 다른 칸으로 옮김
+      if (isMine) {
+        dispatch(moveOneMine({ y, x, height, width }));
+        dispatch(getMinesNeighbor(difficulty));
+        isMine = false;
+        minesNeighbor = boardArray[y][x].minesNeighbor;
+      }
+      dispatch(startGame());
+    }
+
+    // 지뢰가 없고, 이웃한 지뢰도 없는 칸을 클릭했을 경우 :
+    // bfs로 빈칸 및 인접한 칸을 모두 reveal함
+    if (!isMine && minesNeighbor === 0) {
+      dispatch(bfsCells({ y, x, height, width }));
+    }
+    // 지뢰가 있거나, 이웃한 지뢰가 있는 칸 클릭 : 해당 칸만 reveal
+    else {
+      dispatch(revealCell(boardCell));
+      // 지뢰를 클릭했을 경우 : 게임오버
+      if (isMine) {
+        dispatch(loseGame());
+      }
+    }
+  };
+
+  const onCellRightClick = (cellInfo) => {
+    if (isLost || isWon || cellInfo.isRevealed) {
+      return;
+    }
+    dispatch(handleCellRightClick(cellInfo));
+  };
 
   return (
     <Container col={width} row={height}>
