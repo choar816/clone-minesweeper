@@ -35,13 +35,18 @@ export const Modal = ({ isModalOn, setIsModalOn }) => {
       setErrorMessage("지뢰는 width * height 값보다 적게 있어야 합니다.");
       return;
     }
+    if (mine === 0) {
+      setErrorMessage("지뢰는 한 개 이상 있어야 합니다.");
+      return;
+    }
     dispatch(customDifficulty({ width, height, mine }));
     setIsModalOn(false);
   };
 
   return (
-    <Background isModalOn={isModalOn}>
-      <Section>
+    <>
+      <Background isModalOn={isModalOn} onClick={() => setIsModalOn(false)} />
+      <Section isModalOn={isModalOn}>
         <h2>난이도 직접 설정하기</h2>
         {DIFFICULTY_PROPERTIES.map((property) => (
           <>
@@ -52,11 +57,15 @@ export const Modal = ({ isModalOn, setIsModalOn }) => {
         {errorMessage.length !== 0 && <p className="error">{errorMessage}</p>}
         <button onClick={onButtonClick}>설정</button>
       </Section>
-    </Background>
+    </>
   );
 };
 
 const Section = styled.section`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -70,6 +79,10 @@ const Section = styled.section`
   p {
     color: red;
   }
+  input {
+    padding: 5px;
+  }
+  ${({ isModalOn }) => !isModalOn && `display: none;`}
 `;
 
 const Background = styled.div`
