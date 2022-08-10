@@ -22,16 +22,10 @@ const getCellContent = ({ isRevealed, isFlagged, isQuestionable, isMine, minesNe
 export const Board = () => {
   const dispatch = useDispatch();
   const difficulty = useSelector((state) => state.difficulty);
+  const { height, width } = difficulty;
   const { boardArray, revealedCells } = useSelector((state) => state.board);
   const { isStarted, isLost, isWon } = useSelector((state) => state.game);
 
-  const initializeBoard = () => {
-    dispatch(createEmptyBoard(difficulty));
-    dispatch(plantMines(difficulty));
-    dispatch(getMinesNeighbor(difficulty));
-  };
-
-  const { height, width } = difficulty;
   const bfs = (position) => {
     const dy = [1, -1, 0, 1, -1, 0, 1, -1];
     const dx = [0, 0, 1, 1, 1, -1, -1, -1];
@@ -58,17 +52,11 @@ export const Board = () => {
     }
   };
 
-  const checkWin = () => {
-    console.log(revealedCells);
-    if (revealedCells + difficulty.mine === height * width) {
-      dispatch(winGame());
-    }
-  };
-
   const onCellLeftClick = (boardCell) => {
     const { y, x, isMine, isRevealed, isFlagged, isQuestionable, minesNeighbor } = boardCell;
 
-    // 게임이 끝난 경우(지거나 이긴 경우) or cell이 이미 눌렸거나 깃발 또는 물음표인 경우 : cell을 눌러도 아무 효과가 없음
+    // 게임이 끝난 경우(지거나 이긴 경우) or cell이 이미 눌렸거나 깃발 또는 물음표인 경우 :
+    // cell을 눌러도 아무 효과가 없음
     if (isLost || isWon || isRevealed || isFlagged || isQuestionable) {
       return;
     }
@@ -80,29 +68,24 @@ export const Board = () => {
         // do {
         //   initializeBoard();
         // } while (boardArray[y][x].isMine);
-      }
-      if (minesNeighbor === 0) {
-        bfs({ y, x });
-      } else {
-        dispatch(revealCell(boardCell));
+        // return;
       }
       dispatch(startGame());
-      return;
     }
 
-    // 지뢰를 클릭했을 경우 : 게임오버
-    if (isMine) {
-      console.log("GAME OVER");
-      dispatch(revealCell(boardCell));
-      dispatch(loseGame());
-      return;
-    }
-    // 빈칸을 클릭했을 경우 : bfs로 빈칸 및 인접한 칸을 모두 reveal함
-    if (minesNeighbor === 0) {
+    // 지뢰가 없고, 이웃한 지뢰도 없는 칸을 클릭했을 경우 :
+    // bfs로 빈칸 및 인접한 칸을 모두 reveal함
+    if (!isMine && minesNeighbor === 0) {
       bfs({ y, x });
-      return;
     }
-    dispatch(revealCell(boardCell));
+    // 지뢰가 있거나, 이웃한 지뢰가 있는 칸 클릭 : 해당 칸만 reveal
+    else {
+      dispatch(revealCell(boardCell));
+      // 지뢰를 클릭했을 경우 : 게임오버
+      if (isMine) {
+        dispatch(loseGame());
+      }
+    }
   };
 
   const onCellRightClick = (cellInfo) => {
@@ -112,9 +95,25 @@ export const Board = () => {
     dispatch(handleCellRightClick(cellInfo));
   };
 
+  const initializeBoard = () => {
+    dispatch(createEmptyBoard(difficulty));
+    dispatch(plantMines(difficulty));
+    dispatch(getMinesNeighbor(difficulty));
+  };
+
+  const checkWin = () => {
+    if (revealedCells + difficulty.mine === height * width) {
+      dispatch(winGame());
+    }
+  };
+
   useEffect(() => {
     initializeBoard();
   }, []);
+
+  useEffect(() => {
+    checkWin();
+  }, [revealedCells]);
 
   return (
     <Container col={width} row={height}>
@@ -125,7 +124,6 @@ export const Board = () => {
               key={`cell_${rowIndex}_${colIndex}`}
               onClick={() => {
                 onCellLeftClick(boardCell);
-                checkWin();
               }}
               onContextMenu={(e) => {
                 e.preventDefault();
