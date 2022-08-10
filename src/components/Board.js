@@ -6,6 +6,7 @@ import {
   getMinesNeighbor,
   moveOneMine,
   revealCell,
+  revealAllMines,
   handleCellRightClick,
   bfsCells,
 } from "../redux/slices/boardSlice";
@@ -13,9 +14,9 @@ import { checkIsClicking, loseGame, startGame, winGame } from "../redux/slices/g
 import styled from "styled-components";
 
 const getCellContent = ({ isRevealed, isFlagged, isQuestionable, isMine, minesNeighbor }) => {
-  // if (!isRevealed) return "🤫";
   if (isFlagged) return "🚩";
   if (isQuestionable) return "?";
+  // if (!isRevealed) return "🤫";
   if (isMine) return "💣";
   if (minesNeighbor === 0) return "";
   return `${minesNeighbor}`;
@@ -80,6 +81,7 @@ export const Board = () => {
       // 지뢰를 클릭했을 경우 : 게임오버
       if (isMine) {
         dispatch(loseGame());
+        dispatch(revealAllMines({ height, width }));
       }
     }
   };
