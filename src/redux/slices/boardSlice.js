@@ -3,7 +3,7 @@ import { getRandomNumber } from "../../utils/math";
 
 export const boardSlice = createSlice({
   name: "boardSlice",
-  initialState: { boardArray: [], revealedCells: 0 },
+  initialState: { boardArray: [], revealedCells: 0, flaggedCells: 0 },
   reducers: {
     // 빈 board를 난이도별 크기에 맞게 만드는 action
     createEmptyBoard: (state, action) => {
@@ -25,6 +25,7 @@ export const boardSlice = createSlice({
       }
       state.boardArray = newArray;
       state.revealedCells = 0;
+      state.flaggedCells = 0;
     },
     // board에 지뢰를 난이도별 지뢰 개수게 맞게 심는 action
     plantMines: (state, action) => {
@@ -122,6 +123,7 @@ export const boardSlice = createSlice({
       if (isFlagged) {
         state.boardArray[y][x].isFlagged = false;
         state.boardArray[y][x].isQuestionable = true;
+        state.flaggedCells -= 1;
         return;
       }
       if (isQuestionable) {
@@ -129,6 +131,7 @@ export const boardSlice = createSlice({
         return;
       }
       state.boardArray[y][x].isFlagged = true;
+      state.flaggedCells += 1;
     },
   },
 });

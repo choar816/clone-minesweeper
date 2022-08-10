@@ -1,7 +1,12 @@
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 
 export const MinesLeft = () => {
-  return <Div>000</Div>;
+  const { mine } = useSelector((state) => state.difficulty);
+  const { flaggedCells } = useSelector((state) => state.board);
+  const minesLeft = mine - flaggedCells;
+  if (minesLeft < 0) return <Div>{minesLeft}</Div>;
+  return <Div>{(mine - flaggedCells).toString().padStart(3, "0")}</Div>;
 };
 
 const Div = styled.div`
