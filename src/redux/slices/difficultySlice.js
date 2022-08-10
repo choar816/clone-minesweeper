@@ -28,7 +28,13 @@ export const difficultySlice = createSlice({
           break;
       }
     },
+    customDifficulty: (state, action) => {
+      const { width, height, mine } = action.payload;
+      state.width = width;
+      state.height = height;
+      state.mine = mine;
+    },
   },
 });
 
-export const { changeDifficulty } = difficultySlice.actions;
+export const { changeDifficulty, customDifficulty } = difficultySlice.actions;

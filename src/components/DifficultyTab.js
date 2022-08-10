@@ -4,12 +4,14 @@ import { createEmptyBoard, getMinesNeighbor, plantMines } from "../redux/slices/
 import { changeDifficulty } from "../redux/slices/difficultySlice";
 import { resetGame } from "../redux/slices/gameSlice";
 import styled from "styled-components";
+import { Modal } from "./Modal";
 
 export const DifficultyTab = () => {
   const dispatch = useDispatch();
   const difficulty = useSelector((state) => state.difficulty);
-  const DIFFICULTY_STRINGS = ["beginner", "intermediate", "expert"];
+  const DIFFICULTY_STRINGS = ["beginner", "intermediate", "expert", "custom"];
   const [difficultyIndex, setDifficultyIndex] = useState(0);
+  const [isModalOn, setIsModalOn] = useState(false);
 
   const initializeBoard = () => {
     dispatch(createEmptyBoard(difficulty));
@@ -23,22 +25,29 @@ export const DifficultyTab = () => {
   }, [difficulty]);
 
   return (
-    <Container difficultyIndex={difficultyIndex}>
-      {DIFFICULTY_STRINGS.map((difficultyString, index) => {
-        return (
-          <button
-            key={difficultyString}
-            onClick={() => {
-              setDifficultyIndex(index);
-              dispatch(changeDifficulty(difficultyString));
-              initializeBoard();
-            }}
-          >
-            {difficultyString.toUpperCase()}
-          </button>
-        );
-      })}
-    </Container>
+    <>
+      <Container difficultyIndex={difficultyIndex}>
+        {DIFFICULTY_STRINGS.map((difficultyString, index) => {
+          return (
+            <button
+              key={difficultyString}
+              onClick={() => {
+                setDifficultyIndex(index);
+                if (difficultyString === "custom") {
+                  setIsModalOn(true);
+                } else {
+                  dispatch(changeDifficulty(difficultyString));
+                }
+                initializeBoard();
+              }}
+            >
+              {difficultyString.toUpperCase()}
+            </button>
+          );
+        })}
+      </Container>
+      <Modal isModalOn={isModalOn} setIsModalOn={setIsModalOn} />
+    </>
   );
 };
 
