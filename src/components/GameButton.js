@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createEmptyBoard, getMinesNeighbor, plantMines } from "../redux/slices/boardSlice";
 import { resetGame } from "../redux/slices/gameSlice";
@@ -6,9 +7,19 @@ export const GameButton = () => {
   const dispatch = useDispatch();
   const difficulty = useSelector((state) => state.difficulty);
   const { isLost, isWon } = useSelector((state) => state.game);
-  let buttonContent = "🙂";
-  if (isLost) buttonContent = "😵";
-  if (isWon) buttonContent = "🥳";
+
+  const [emoji, setEmoji] = useState("🙂");
+  useEffect(() => {
+    if (isLost) {
+      setEmoji("😵");
+      return;
+    }
+    if (isWon) {
+      setEmoji("🥳");
+      return;
+    }
+    setEmoji("🙂");
+  }, [isLost, isWon]);
 
   const initializeBoard = () => {
     dispatch(createEmptyBoard(difficulty));
@@ -17,5 +28,5 @@ export const GameButton = () => {
     dispatch(resetGame());
   };
 
-  return <button onClick={initializeBoard}>{buttonContent}</button>;
+  return <button onClick={initializeBoard}>{emoji}</button>;
 };

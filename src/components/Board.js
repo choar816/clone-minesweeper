@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   createEmptyBoard,
@@ -7,7 +7,7 @@ import {
   revealCell,
   handleCellRightClick,
 } from "../redux/slices/boardSlice";
-import { loseGame, startGame } from "../redux/slices/gameSlice";
+import { loseGame, startGame, winGame } from "../redux/slices/gameSlice";
 import styled from "styled-components";
 
 const getCellContent = ({ isRevealed, isFlagged, isQuestionable, isMine, minesNeighbor }) => {
@@ -22,22 +22,14 @@ const getCellContent = ({ isRevealed, isFlagged, isQuestionable, isMine, minesNe
 export const Board = () => {
   const dispatch = useDispatch();
   const difficulty = useSelector((state) => state.difficulty);
-  const boardArray = useSelector((state) => state.board.boardArray);
+  const { boardArray, revealedCells } = useSelector((state) => state.board);
   const { isStarted, isLost, isWon } = useSelector((state) => state.game);
-  const [isFirstClick, setIsFirstClick] = useState(true);
 
   const initializeBoard = () => {
     dispatch(createEmptyBoard(difficulty));
     dispatch(plantMines(difficulty));
     dispatch(getMinesNeighbor(difficulty));
   };
-
-  // const makeBoardWithNoMineAt = ({ y, x }) => {
-  //   console.log("makeBoardWithNoMineAt");
-  //   do {
-  //     initializeBoard();
-  //   } while (boardArray[y][x].isMine);
-  // };
 
   const { height, width } = difficulty;
   const bfs = (position) => {
@@ -49,10 +41,10 @@ export const Board = () => {
 
     while (queue.length) {
       let { y, x } = queue.shift();
-
-      if (boardArray[y][x].isMine || boardArray[y][x].isFlagged) continue;
+      const { isMine, isFlagged, isQuestionable, isRevealed, minesNeighbor } = boardArray[y][x];
+      if (isMine || isFlagged || isQuestionable || isRevealed) continue;
       dispatch(revealCell({ y, x }));
-      if (boardArray[y][x].minesNeighbor !== 0) continue;
+      if (minesNeighbor !== 0) continue;
 
       for (let i = 0; i < 8; i++) {
         const ny = y + dy[i];
@@ -66,32 +58,54 @@ export const Board = () => {
     }
   };
 
-  const onCellLeftClick = (e, cellInfo) => {
-    const { y, x, isMine, minesNeighbor } = cellInfo;
-    if (isLost || isWon) {
-      return;
-    }
-    // 첫 번째 클릭일 경우
-    if (!isStarted) {
-      dispatch(startGame());
-      // makeBoardWithNoMineAt(boardCell);
-      // return;
-    }
-    dispatch(revealCell({ y, x }));
-    // setIsFirstClick(false);
-    if (isMine) {
-      console.log("GAME OVER");
-      dispatch(loseGame());
-      return;
-    }
-    // 빈칸을 클릭했을 경우 bfs로 빈칸 및 인접한 칸을 모두 reveal함
-    if (minesNeighbor === 0) {
-      bfs({ y, x });
+  const checkWin = () => {
+    console.log(revealedCells);
+    if (revealedCells + difficulty.mine === height * width) {
+      dispatch(winGame());
     }
   };
 
-  const onCellRightClick = (e, cellInfo) => {
-    e.preventDefault();
+  const onCellLeftClick = (boardCell) => {
+    const { y, x, isMine, isRevealed, isFlagged, isQuestionable, minesNeighbor } = boardCell;
+
+    // 게임이 끝난 경우(지거나 이긴 경우) or cell이 이미 눌렸거나 깃발 또는 물음표인 경우 : cell을 눌러도 아무 효과가 없음
+    if (isLost || isWon || isRevealed || isFlagged || isQuestionable) {
+      return;
+    }
+
+    // 첫 번째 클릭일 경우
+    if (!isStarted) {
+      if (isMine) {
+        // TODO: Fix error
+        // do {
+        //   initializeBoard();
+        // } while (boardArray[y][x].isMine);
+      }
+      if (minesNeighbor === 0) {
+        bfs({ y, x });
+      } else {
+        dispatch(revealCell(boardCell));
+      }
+      dispatch(startGame());
+      return;
+    }
+
+    // 지뢰를 클릭했을 경우 : 게임오버
+    if (isMine) {
+      console.log("GAME OVER");
+      dispatch(revealCell(boardCell));
+      dispatch(loseGame());
+      return;
+    }
+    // 빈칸을 클릭했을 경우 : bfs로 빈칸 및 인접한 칸을 모두 reveal함
+    if (minesNeighbor === 0) {
+      bfs({ y, x });
+      return;
+    }
+    dispatch(revealCell(boardCell));
+  };
+
+  const onCellRightClick = (cellInfo) => {
     if (isLost || isWon || cellInfo.isRevealed) {
       return;
     }
@@ -109,11 +123,13 @@ export const Board = () => {
           return (
             <Cell
               key={`cell_${rowIndex}_${colIndex}`}
-              onClick={(e) => {
-                onCellLeftClick(e, boardCell);
+              onClick={() => {
+                onCellLeftClick(boardCell);
+                checkWin();
               }}
               onContextMenu={(e) => {
-                onCellRightClick(e, boardCell);
+                e.preventDefault();
+                onCellRightClick(boardCell);
               }}
               {...boardCell}
             >
