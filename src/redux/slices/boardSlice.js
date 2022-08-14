@@ -71,7 +71,9 @@ export const boardSlice = createSlice({
       const dy = [1, -1, 0, 1, -1, 0, 1, -1];
       const dx = [0, 0, 1, 1, 1, -1, -1, -1];
 
-      const { y, x, height, width } = action.payload;
+      const { y, x } = action.payload;
+      const height = state.boardArray.length;
+      const width = state.boardArray[0].length;
       const queue = [{ y, x }];
       const visited = new Set([JSON.stringify({ y, x })]);
 
@@ -96,7 +98,10 @@ export const boardSlice = createSlice({
     },
     // 지뢰 하나를 옮겨심는 action
     moveOneMine: (state, action) => {
-      const { y, x, height, width } = action.payload;
+      const { y, x } = action.payload;
+      const height = state.boardArray.length;
+      const width = state.boardArray[0].length;
+
       let candidates = [];
       for (let i = 0; i < height; ++i) {
         for (let j = 0; j < width; ++j) {
@@ -116,8 +121,10 @@ export const boardSlice = createSlice({
       state.revealedCells += 1;
     },
     // 모든 지뢰를 여는 action
-    revealAllMines: (state, action) => {
-      const { height, width } = action.payload;
+    revealAllMines: (state) => {
+      const height = state.boardArray.length;
+      const width = state.boardArray[0].length;
+
       for (let i = 0; i < height; i++) {
         for (let j = 0; j < width; j++) {
           if (state.boardArray[i][j].isMine) {

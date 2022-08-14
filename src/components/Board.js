@@ -89,7 +89,7 @@ export const Board = () => {
     if (!isStarted) {
       // 지뢰를 누른 경우 해당 칸의 지뢰를 다른 칸으로 옮김
       if (isMine) {
-        dispatch(moveOneMine({ y, x, height, width }));
+        dispatch(moveOneMine({ y, x }));
         dispatch(getMinesNeighbor(difficulty));
         isMine = false;
         minesNeighbor = boardArray[y][x].minesNeighbor;
@@ -100,7 +100,7 @@ export const Board = () => {
     // 지뢰가 없고, 이웃한 지뢰도 없는 칸을 클릭했을 경우 :
     // bfs로 빈칸 및 인접한 칸을 모두 reveal함
     if (!isMine && minesNeighbor === 0) {
-      dispatch(bfsCells({ y, x, height, width }));
+      dispatch(bfsCells({ y, x }));
     }
     // 지뢰가 있거나, 이웃한 지뢰가 있는 칸 클릭 : 해당 칸만 reveal
     else {
@@ -108,8 +108,8 @@ export const Board = () => {
       // 지뢰를 클릭했을 경우 : 게임오버
       if (isMine) {
         dispatch(loseGame());
+        dispatch(revealAllMines());
         dispatch(indicateBust({ y, x }));
-        dispatch(revealAllMines({ height, width }));
       }
     }
   };
