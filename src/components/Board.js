@@ -11,6 +11,7 @@ import {
   handleCellRightClick,
   bfsCells,
   flagAllMines,
+  indicateFalseAlarms,
 } from "../redux/slices/boardSlice";
 import { checkIsClicking, loseGame, startGame, winGame } from "../redux/slices/gameSlice";
 import styled from "styled-components";
@@ -44,7 +45,8 @@ export const Board = () => {
   const { boardArray, revealedCells } = useSelector((state) => state.board);
   const { isStarted, isLost, isWon } = useSelector((state) => state.game);
 
-  const getCellContent = ({ isRevealed, isFlagged, isQuestionable, isMine, minesNeighbor }) => {
+  const getCellContent = ({ isFalseAlarm, isRevealed, isFlagged, isQuestionable, isMine, minesNeighbor }) => {
+    if (isFalseAlarm) return "❌";
     if (isFlagged) return "🚩";
     if (isQuestionable) return "?";
     if (!isGameModeDevelop) {
@@ -110,6 +112,7 @@ export const Board = () => {
         dispatch(loseGame());
         dispatch(revealAllMines());
         dispatch(indicateBust({ y, x }));
+        dispatch(indicateFalseAlarms());
       }
     }
   };

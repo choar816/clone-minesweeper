@@ -15,6 +15,7 @@ export const boardSlice = createSlice({
           newArray[i][j] = {
             y: i,
             x: j,
+            isFalseAlarm: false,
             isRevealed: false,
             isMine: false,
             isFlagged: false,
@@ -120,14 +121,16 @@ export const boardSlice = createSlice({
       state.boardArray[y][x].isRevealed = true;
       state.revealedCells += 1;
     },
-    // 모든 지뢰를 여는 action
+    // 모든 지뢰칸을 여는 action (지뢰 클릭시 실행)
     revealAllMines: (state) => {
       const height = state.boardArray.length;
       const width = state.boardArray[0].length;
 
       for (let i = 0; i < height; i++) {
         for (let j = 0; j < width; j++) {
-          if (state.boardArray[i][j].isMine) {
+          // 깃발이 지뢰에 꼽혀있었던 경우 칸을 열지 않는다.
+          const { isMine, isFlagged } = state.boardArray[i][j];
+          if (isMine && !isFlagged) {
             state.boardArray[i][j].isRevealed = true;
           }
         }
@@ -170,6 +173,21 @@ export const boardSlice = createSlice({
         }
       }
     },
+    // 지뢰 없는데 깃발 꽂은 칸들 표시 (게임 질시 실행)
+    indicateFalseAlarms: (state) => {
+      const height = state.boardArray.length;
+      const width = state.boardArray[0].length;
+
+      for (let i = 0; i < height; i++) {
+        for (let j = 0; j < width; j++) {
+          let { didBust, isMine, isFlagged } = state.boardArray[i][j];
+          if (!didBust && !isMine && isFlagged) {
+            state.boardArray[i][j].isFalseAlarm = true;
+            state.boardArray[i][j].isRevealed = true;
+          }
+        }
+      }
+    },
   },
 });
 
@@ -184,4 +202,5 @@ export const {
   handleCellRightClick,
   bfsCells,
   flagAllMines,
+  indicateFalseAlarms,
 } = boardSlice.actions;
