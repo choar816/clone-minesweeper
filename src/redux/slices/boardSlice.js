@@ -150,6 +150,19 @@ export const boardSlice = createSlice({
       state.boardArray[y][x].isFlagged = true;
       state.flaggedCells += 1;
     },
+    // 지뢰가 있는 모든 칸에 깃발을 꼽는 action (게임 이길시 실행)
+    flagAllMines: (state) => {
+      const height = state.boardArray.length;
+      const width = state.boardArray[0].length;
+
+      for (let i = 0; i < height; i++) {
+        for (let j = 0; j < width; j++) {
+          if (state.boardArray[i][j].isMine) {
+            state.boardArray[i][j].isFlagged = true;
+          }
+        }
+      }
+    },
   },
 });
 
@@ -163,4 +176,5 @@ export const {
   indicateBust,
   handleCellRightClick,
   bfsCells,
+  flagAllMines,
 } = boardSlice.actions;

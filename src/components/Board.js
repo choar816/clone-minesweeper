@@ -10,6 +10,7 @@ import {
   indicateBust,
   handleCellRightClick,
   bfsCells,
+  flagAllMines,
 } from "../redux/slices/boardSlice";
 import { checkIsClicking, loseGame, startGame, winGame } from "../redux/slices/gameSlice";
 import styled from "styled-components";
@@ -63,6 +64,7 @@ export const Board = () => {
   const checkWin = () => {
     if (revealedCells + difficulty.mine === height * width) {
       dispatch(winGame());
+      dispatch(flagAllMines());
     }
   };
 
