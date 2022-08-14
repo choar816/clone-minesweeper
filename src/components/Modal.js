@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import styled from "styled-components";
 import { customDifficulty } from "../redux/slices/difficultySlice";
+import styled from "styled-components";
+import { Button, Input } from "antd";
+import "antd/dist/antd.min.css";
 
 export const Modal = ({ isModalOn, setIsModalOn }) => {
   const dispatch = useDispatch();
@@ -30,8 +32,12 @@ export const Modal = ({ isModalOn, setIsModalOn }) => {
       setErrorMessage("음수를 입력하면 안됩니다.");
       return;
     }
+    if (width > 100 || height > 100) {
+      setErrorMessage("width, height는 100을 초과할 수 없습니다.");
+      return;
+    }
     if (mine >= width * height) {
-      setErrorMessage("지뢰는 width * height 값보다 적게 있어야 합니다.");
+      setErrorMessage(`지뢰는 width * height 값(${width * height})보다 적게 있어야 합니다.`);
       return;
     }
     if (mine === 0) {
@@ -46,21 +52,24 @@ export const Modal = ({ isModalOn, setIsModalOn }) => {
     <>
       <Background isModalOn={isModalOn} onClick={() => setIsModalOn(false)} />
       <Section isModalOn={isModalOn}>
-        <h2>난이도 직접 설정하기</h2>
+        <h3>난이도 직접 설정하기</h3>
         {DIFFICULTY_PROPERTIES.map((property) => (
-          <>
+          <div>
             <label htmlFor={property}>{property}</label>
-            <input name={property} id={property} onChange={onInputChange} />
-          </>
+            <Input name={property} id={property} onChange={onInputChange} addOnBefore={"asdf"} />
+          </div>
         ))}
         {errorMessage.length !== 0 && <p className="error">{errorMessage}</p>}
-        <button onClick={onButtonClick}>설정</button>
+        <Button type="primary" onClick={onButtonClick}>
+          설정
+        </Button>
       </Section>
     </>
   );
 };
 
 const Section = styled.section`
+  width: 280px;
   position: fixed;
   top: 50%;
   left: 50%;
@@ -69,17 +78,30 @@ const Section = styled.section`
   flex-direction: column;
   gap: 10px;
   padding: 30px;
+  border-radius: 10px;
   background-color: #fff;
+  box-shadow: rgb(0 0 0 / 10%) 0px 0px 10px 5px;
   z-index: 10;
-  h2,
+
+  h3 {
+    margin: 0;
+    text-align: center;
+  }
   p {
     margin: 0;
-  }
-  p {
     color: red;
+    font-size: 0.9rem;
   }
-  input {
-    padding: 5px;
+  div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    label {
+      width: 70px;
+    }
+    input {
+      width: 120px;
+    }
   }
   ${({ isModalOn }) => !isModalOn && `display: none;`}
 `;

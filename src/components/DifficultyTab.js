@@ -58,7 +58,7 @@ const Container = styled.article`
     background-color: #474747;
     color: #fff;
     border: none;
-    padding: 3px 5px;
+    padding: 2px 10px;
     border-radius: 3px;
 
     ${({ difficultyIndex }) => `

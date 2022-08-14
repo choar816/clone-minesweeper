@@ -14,21 +14,45 @@ import {
 import { checkIsClicking, loseGame, startGame, winGame } from "../redux/slices/gameSlice";
 import styled from "styled-components";
 
-const getCellContent = ({ isRevealed, isFlagged, isQuestionable, isMine, minesNeighbor }) => {
-  if (isFlagged) return "🚩";
-  if (isQuestionable) return "?";
-  // if (!isRevealed) return "";
-  if (isMine) return "💣";
-  if (minesNeighbor === 0) return "";
-  return `${minesNeighbor}`;
+const getCellTextColor = (minesNeighbor) => {
+  switch (minesNeighbor) {
+    case 1:
+      return "blue";
+    case 2:
+      return "green";
+    case 3:
+      return "red";
+    case 4:
+      return "darkblue";
+    case 5:
+      return "darkred";
+    case 6:
+      return "darkcyan";
+    case 8:
+      return "dimgray";
+    default:
+      return "black";
+  }
 };
 
 export const Board = () => {
   const dispatch = useDispatch();
   const difficulty = useSelector((state) => state.difficulty);
+  const { isGameModeDevelop } = useSelector((state) => state.game);
   const { height, width } = difficulty;
   const { boardArray, revealedCells } = useSelector((state) => state.board);
   const { isStarted, isLost, isWon } = useSelector((state) => state.game);
+
+  const getCellContent = ({ isRevealed, isFlagged, isQuestionable, isMine, minesNeighbor }) => {
+    if (isFlagged) return "🚩";
+    if (isQuestionable) return "?";
+    if (!isGameModeDevelop) {
+      if (!isRevealed) return "";
+    }
+    if (isMine) return "💣";
+    if (minesNeighbor === 0) return "";
+    return `${minesNeighbor}`;
+  };
 
   const initializeBoard = () => {
     dispatch(createEmptyBoard(difficulty));
@@ -141,8 +165,9 @@ const Cell = styled.button`
   justify-content: center;
   width: 25px;
   height: 25px;
-  font-size: 12px;
+  font-size: 1rem;
   background-color: #ccc;
+  overflow: hidden;
 
   ${({ isRevealed }) =>
     isRevealed &&
@@ -155,4 +180,5 @@ const Cell = styled.button`
     `
     background-color: red;
   `}
+  ${({ minesNeighbor }) => `color: ${getCellTextColor(minesNeighbor)};`}
 `;

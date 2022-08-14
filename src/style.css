@@ -1,4 +1,19 @@
-html, body {
+@font-face {
+  font-family: "GmarketSansMedium";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "DungGeunMo";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGeunMo.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+html,
+body {
   height: 100%;
 }
 
@@ -8,4 +23,24 @@ body {
   align-items: center;
   justify-content: center;
   background-color: #a4c4ff;
+  font-size: 1.1rem;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+button,
+label,
+input,
+div,
+h3,
+p {
+  font-family: "DungGeunMo";
+}
+h3 {
+  font-weight: 600;
 }

@@ -21,5 +21,9 @@ export const GameButton = () => {
     dispatch(resetGame());
   };
 
-  return <button onClick={initializeBoard}>{getEmoji({ isLost, isWon, isClicking })}</button>;
+  return (
+    <button onClick={initializeBoard} style={{ padding: "2px 6px 0 4px" }}>
+      {getEmoji({ isLost, isWon, isClicking })}
+    </button>
+  );
 };

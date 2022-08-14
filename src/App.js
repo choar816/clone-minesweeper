@@ -1,14 +1,24 @@
+import { useDispatch } from "react-redux";
+import { changeGameMode } from "./redux/slices/gameSlice";
 import { Board } from "./components/Board";
 import { MinesLeft } from "./components/MinesLeft";
 import { Timer } from "./components/Timer";
 import { DifficultyTab } from "./components/DifficultyTab";
 import { GameButton } from "./components/GameButton";
 import styled from "styled-components";
+import { Switch } from "antd";
+import "antd/dist/antd.min.css";
 import "./style.css";
 
 function App() {
+  const dispatch = useDispatch();
+
   return (
     <main>
+      <div>
+        개발모드 스위치
+        <Switch onChange={(checked) => dispatch(changeGameMode(checked))} style={{ marginLeft: 10 }} />
+      </div>
       <GameContainer>
         <GameHeader>
           <MinesLeft />
