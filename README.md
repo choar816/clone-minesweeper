@@ -1,70 +1,42 @@
-# Getting Started with Create React App
+# Minesweeper
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+지뢰찾기를 클론한 프로젝트입니다.
 
-## Available Scripts
+## 사용 기술
+- `React`, `JavaScript`, `Redux Toolkit`, `Styled Components`, `Ant Design`
 
-In the project directory, you can run:
+## 과제 설명
+- 지뢰찾기 게임입니다.
+- 승패
+  - 지뢰인 칸을 제외한 모든 칸을 열면 승리합니다.
+    - 승리하면 열지 않았던 지뢰칸에 깃발이 꼽힙니다.
+  - 지뢰가 있는 칸을 누르면 패배합니다.
+    - 모든 지뢰 칸이 열리게 됩니다.
+    - 지뢰가 없는데 깃발을 꼽았던 칸은 열리고 X 표시가 됩니다.
+- 규칙
+  - 맨 첫번째 누른 칸은 지뢰가 아닙니다. (지뢰일 시 해당 칸의 지뢰를 옮기도록 구현했습니다.)
+  - 이웃한 지뢰의 숫자가 0인 칸을 누를 시, 상하좌우가 인접한 이웃한 지뢰의 숫자가 0인 칸을 모두 엽니다. 또한 이웃한 지뢰의 숫자가 0인 칸의 상하좌우대각선 칸까지 엽니다.
+- 기능
+  - 게임판 칸에서 우클릭을 하면 원래칸 -> 깃발 -> 물음표 -> 원래칸 -> .. 순서로 순환합니다. (이미 열린 칸은 우클릭해도 변하지 않습니다.)
+  - '개발모드 스위치'를 on하면 열지 않은 칸도 지뢰 유무와 이웃 지뢰 수가 다 보이는 개발모드로 게임이 진행되고, off하면 열지 않은 칸은 보이지 않는 실전모드로 게임이 진행됩니다.
+  - 상단 좌측 '남은 지뢰 수': 남은 지뢰의 수를 띄워줍니다. (지뢰 수 - 꼽은 깃발 수)로 계산하기에 0이더라도 게임이 끝나지 않을 수 있습니다. 
+  - 상단 가운데 '이모지 버튼': 게임의 진행 상태에 따라 이모지가 변합니다. 게임 진행 중 누르면 실행되던 게임이 종료되고, 게임판이 재설정됩니다.
+  - 상단 우측 '타이머': 칸을 하나 열면 게임이 시작된 것으로 간주해 타이머가 실행됩니다. 게임을 승리/패배하거나 999초에 도달하면 멈춥니다.
+  - 난이도를 초급/중급/고급 중 선택할 수 있습니다.
+  - 난이도를 커스텀할 수 있습니다.
+    - 지뢰 0개, 게임판 크기 100x100 초과 등의 설정은 불가합니다.
 
-### `npm start`
+## 컴포넌트 구성
+![minesweeper](./img_readme/minesweeper.png)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## 실행 방법
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+1. `npm install`
 
-### `npm test`
+프로젝트 실행에 필요한 패키지 파일들을 다운로드 받습니다.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+2. `npm start`
 
-### `npm run build`
+프로젝트를 실행합니다.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+http://localhost:3000/ 로 접속할 수 있습니다.
