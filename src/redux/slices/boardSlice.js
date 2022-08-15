@@ -1,11 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getRandomNumber } from "../../utils/math";
+import { getRandomNumber } from "utils/math";
 
+// 게임 판(board)에 관련된 정보와 함수를 갖고 있는 slice
 export const boardSlice = createSlice({
   name: "boardSlice",
+  // boardArray: 2차원 배열로 나타낸 게임판
+  // revealedCells: 열린 칸의 개수
+  // flaggedCells: 깃발을 꽂은 칸의 개수
   initialState: { boardArray: [], revealedCells: 0, flaggedCells: 0 },
   reducers: {
-    // 빈 board를 난이도별 크기에 맞게 만드는 action
+    // 빈 board를 난이도별 크기에 맞게 2차원 배열로 만드는 함수
     createEmptyBoard: (state, action) => {
       const { width, height } = action.payload;
       let newArray = [];
@@ -13,6 +17,14 @@ export const boardSlice = createSlice({
         newArray.push([]);
         for (let j = 0; j < width; j++) {
           newArray[i][j] = {
+            // y, x: 해당 칸의 좌표
+            // isFalseAlarm: 지뢰가 없는데 깃발을 꽂은 칸이라면 true
+            // isRevealed: 칸이 열렸으면 true
+            // isMine: 지뢰가 있는 칸이라면 true
+            // isFlagged: 깃발이 꼽혀있는 칸이라면 true
+            // isQuestionable: 물음표로 표시된 칸이라면 true
+            // didBust: 해당 칸을 눌러서 게임오버됐다면 true
+            // minesNeighbor: 이웃한(상하좌우대각선) 지뢰의 개수
             y: i,
             x: j,
             isFalseAlarm: false,
@@ -29,9 +41,11 @@ export const boardSlice = createSlice({
       state.revealedCells = 0;
       state.flaggedCells = 0;
     },
-    // board에 지뢰를 난이도별 지뢰 개수게 맞게 심는 action
+    // board 배열에 지뢰를 난이도별 지뢰 개수에 맞게 심는 함수
     plantMines: (state, action) => {
-      const { width, height, mine } = action.payload;
+      const height = state.boardArray.length;
+      const width = state.boardArray[0].length;
+      const { mine } = action.payload;
       let minesPlanted = 0;
       while (minesPlanted < mine) {
         let y = getRandomNumber(0, height);
@@ -43,9 +57,10 @@ export const boardSlice = createSlice({
       }
     },
     // board를 처음부터 끝까지 훑으며, 지뢰가 없는 칸의 경우
-    // 인접한(가로, 세로, 대각선) 칸에 있는 지뢰의 개수를 기록하는 action
+    // 인접한(가로, 세로, 대각선) 칸에 있는 지뢰의 개수를 기록하는 함수
     getMinesNeighbor: (state, action) => {
-      const { width, height } = action.payload;
+      const height = state.boardArray.length;
+      const width = state.boardArray[0].length;
       const dy = [1, -1, 0, 1, -1, 0, 1, -1];
       const dx = [0, 0, 1, 1, 1, -1, -1, -1];
 
@@ -67,7 +82,7 @@ export const boardSlice = createSlice({
         }
       }
     },
-    // 특정 cell부터 bfs를 수행하는 action
+    // 특정 cell부터 bfs를 수행하는 함수
     bfsCells: (state, action) => {
       const dy = [1, -1, 0, 1, -1, 0, 1, -1];
       const dx = [0, 0, 1, 1, 1, -1, -1, -1];
@@ -97,7 +112,7 @@ export const boardSlice = createSlice({
         }
       }
     },
-    // 지뢰 하나를 옮겨심는 action
+    // 지뢰 하나를 옮겨심는 함수
     moveOneMine: (state, action) => {
       const { y, x } = action.payload;
       const height = state.boardArray.length;
@@ -106,7 +121,7 @@ export const boardSlice = createSlice({
       let candidates = [];
       for (let i = 0; i < height; ++i) {
         for (let j = 0; j < width; ++j) {
-          if (!state.boardArray[i][j].isMine) {
+          if (!state.boardArray[i][j].isMine ) {
             candidates.push({ y: i, x: j });
           }
         }
@@ -115,20 +130,20 @@ export const boardSlice = createSlice({
       state.boardArray[y][x].isMine = false;
       state.boardArray[nextPos.y][nextPos.x].isMine = true;
     },
-    // cell을 여는 action
+    // 칸 한개를 여는 함수
     revealCell: (state, action) => {
       const { y, x } = action.payload;
       state.boardArray[y][x].isRevealed = true;
       state.revealedCells += 1;
     },
-    // 모든 지뢰칸을 여는 action (지뢰 클릭시 실행)
+    // 지뢰가 있는 모든 칸을 여는 함수 (지뢰 클릭시 실행)
     revealAllMines: (state) => {
       const height = state.boardArray.length;
       const width = state.boardArray[0].length;
 
       for (let i = 0; i < height; i++) {
         for (let j = 0; j < width; j++) {
-          // 깃발이 지뢰에 꼽혀있었던 경우 칸을 열지 않는다.
+          // 깃발이 지뢰 있는 칸에 꼽혀있었던 경우 칸을 열지 않는다.
           const { isMine, isFlagged } = state.boardArray[i][j];
           if (isMine && !isFlagged) {
             state.boardArray[i][j].isRevealed = true;
@@ -136,12 +151,14 @@ export const boardSlice = createSlice({
         }
       }
     },
-    // 게임오버를 하게 만든 지뢰를 표시
+    // 게임오버를 하게 만든 지뢰를 표시하는 함수
     indicateBust: (state, action) => {
       const { y, x } = action.payload;
       state.boardArray[y][x].didBust = true;
     },
-    // cell에 우클릭 했을 때 기능을 처리하는 action
+    // 칸에 우클릭 했을 때 기능을 처리하는 함수
+    // 칸이 열려있는 경우 아무 기능도 수행하지 않는다.
+    // 칸이 닫혀있는 경우 빈칸 -> 깃발 -> 물음표 -> 빈칸 .. 순으로 순환한다.
     handleCellRightClick: (state, action) => {
       const { y, x, isRevealed, isFlagged, isQuestionable } = action.payload;
       if (isRevealed) {
@@ -160,7 +177,7 @@ export const boardSlice = createSlice({
       state.boardArray[y][x].isFlagged = true;
       state.flaggedCells += 1;
     },
-    // 지뢰가 있는 모든 칸에 깃발을 꼽는 action (게임 이길시 실행)
+    // 지뢰가 있는 모든 칸에 깃발을 꼽는 함수 (게임 이길시 실행)
     flagAllMines: (state) => {
       const height = state.boardArray.length;
       const width = state.boardArray[0].length;
@@ -173,7 +190,7 @@ export const boardSlice = createSlice({
         }
       }
     },
-    // 지뢰 없는데 깃발 꽂은 칸들 표시 (게임 질시 실행)
+    // 지뢰가 없는데 깃발 꽂은 칸들을 표시하는 함수 (게임 질시 실행)
     indicateFalseAlarms: (state) => {
       const height = state.boardArray.length;
       const width = state.boardArray[0].length;

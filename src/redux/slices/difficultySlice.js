@@ -1,10 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+// 게임 난이도에 관련된 정보와 함수를 갖고 있는 slice
 export const difficultySlice = createSlice({
   name: "difficultySlice",
+  // width: 너비, height: 높이, mine: 지뢰수
   initialState: { width: 8, height: 8, mine: 10 },
   reducers: {
-    changeDifficulty: (state, action) => {
+    // 초급, 중급, 고급 중 난이도를 선택하는 함수
+    chooseDifficulty: (state, action) => {
       switch (action.payload) {
         case "beginner":
           state.width = 8;
@@ -28,6 +31,7 @@ export const difficultySlice = createSlice({
           break;
       }
     },
+    // 난이도를 직접 설정하는 함수
     customDifficulty: (state, action) => {
       const { width, height, mine } = action.payload;
       state.width = width;
@@ -37,4 +41,4 @@ export const difficultySlice = createSlice({
   },
 });
 
-export const { changeDifficulty, customDifficulty } = difficultySlice.actions;
+export const { chooseDifficulty, customDifficulty } = difficultySlice.actions;

@@ -1,15 +1,16 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { customDifficulty } from "../redux/slices/difficultySlice";
+import { customDifficulty } from "redux/slices/difficultySlice";
 import styled from "styled-components";
 import { Button, Input } from "antd";
 import "antd/dist/antd.min.css";
 
-export const Modal = ({ isModalOn, setIsModalOn }) => {
+// 게임 난이도를 커스텀할 때 사용되는 모달 컴포넌트
+export const CustomDifficultyModal = ({ isModalOn, setIsModalOn }) => {
   const dispatch = useDispatch();
 
   const DIFFICULTY_PROPERTIES = ["width", "height", "mine"];
-  const [difficultyObject, setDifficultyObject] = useState({
+  const [difficultyState, setDifficultyState] = useState({
     width: "",
     height: "",
     mine: "",
@@ -17,13 +18,16 @@ export const Modal = ({ isModalOn, setIsModalOn }) => {
   const [errorMessage, setErrorMessage] = useState("");
 
   const onInputChange = (e) => {
-    setDifficultyObject((obj) => {
+    setDifficultyState((obj) => {
       return { ...obj, [e.target.name]: parseInt(e.target.value, 10) };
     });
   };
 
+  // 난이도 커스텀 모달에서 '설정'을 눌렀을 때 실행되는 함수
+  // 너비, 높이, 지뢰수 입력 값을 계산해 적절하지 않을 시 에러 메시지를 띄우고 난이도를 바꾸지 않는다.
+  // 적절한 경우에만 난이도를 그대로 설정하고 모달을 닫는다.
   const onButtonClick = () => {
-    const { width, height, mine } = difficultyObject;
+    const { width, height, mine } = difficultyState;
     if (isNaN(width) || isNaN(height) || isNaN(mine)) {
       setErrorMessage("모든 칸에 숫자를 입력하세요.");
       return;
@@ -44,6 +48,7 @@ export const Modal = ({ isModalOn, setIsModalOn }) => {
       setErrorMessage("지뢰는 한 개 이상 있어야 합니다.");
       return;
     }
+    setErrorMessage("");
     dispatch(customDifficulty({ width, height, mine }));
     setIsModalOn(false);
   };
