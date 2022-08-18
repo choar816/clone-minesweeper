@@ -7,7 +7,7 @@ import styled from "styled-components";
 export const Timer = () => {
   const dispatch = useDispatch();
   const { isStarted, isLost, isWon, seconds } = useSelector((state) => state.game);
-  
+
   useEffect(() => {
     // 게임을 지거나, 이기거냐, 999초가 되면 시간이 멈춘다.
     if (isLost || isWon || seconds === 999) {

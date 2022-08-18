@@ -14,16 +14,16 @@ import {
   indicateFalseAlarms,
 } from "redux/slices/boardSlice";
 import { checkIsClicking, loseGame, startGame, winGame } from "redux/slices/gameSlice";
-import { getCellContent, getCellTextColor } from "utils/board";
+import { getCellContent } from "utils/board";
+import { Cell } from "./Cell";
 import styled from "styled-components";
 
 export const Board = () => {
   const dispatch = useDispatch();
   const difficulty = useSelector((state) => state.difficulty);
-  const { isGameModeDevelop } = useSelector((state) => state.game);
-  const { height, width } = difficulty;
   const { boardArray, revealedCells } = useSelector((state) => state.board);
-  const { isStarted, isLost, isWon } = useSelector((state) => state.game);
+  const { isStarted, isLost, isWon, isGameModeDevelop } = useSelector((state) => state.game);
+  const { height, width } = difficulty;
 
   // 게임판을 초기화하는 함수
   // 난이도에 맞게 빈 2차원 배열을 만들고,
@@ -56,9 +56,7 @@ export const Board = () => {
   }, [revealedCells]);
 
   // 칸 위에서 좌클릭을 했을 떄 실행되는 함수
-  const onCellLeftClick = (boardCell) => {
-    let { y, x, isMine, isRevealed, isFlagged, isQuestionable, minesNeighbor } = boardCell;
-
+  const onCellLeftClick = ({ y, x, isMine, isRevealed, isFlagged, isQuestionable, minesNeighbor }) => {
     // 게임이 끝난 경우(지거나 이긴 경우) or 칸이 이미 열렸거나 깃발 또는 물음표인 경우 :
     // 칸을 눌러도 아무 효과가 없음
     if (isLost || isWon || isRevealed || isFlagged || isQuestionable) {
@@ -83,7 +81,7 @@ export const Board = () => {
     }
     // 지뢰가 있거나, 이웃한 지뢰가 있는 칸 클릭 : 해당 칸만 연다.
     else {
-      dispatch(revealCell(boardCell));
+      dispatch(revealCell({ y, x }));
       // 지뢰를 클릭했을 경우 : 게임오버
       if (isMine) {
         dispatch(loseGame());
@@ -112,21 +110,31 @@ export const Board = () => {
       onMouseUp={() => {
         dispatch(checkIsClicking(false));
       }}
+      onClick={(e) => {
+        let y = e.target.getAttribute("y");
+        let x = e.target.getAttribute("x");
+        onCellLeftClick(boardArray[y][x]);
+        console.log(boardArray[y][x]);
+      }}
+      onContextMenu={(e) => {
+        e.preventDefault();
+        let y = e.target.getAttribute("y");
+        let x = e.target.getAttribute("x");
+        onCellRightClick(boardArray[y][x]);
+      }}
     >
       {/* 2차원 배열인 게임판을 화면에 표시하는 부분 */}
       {boardArray.map((boardRow, rowIndex) => {
         return boardRow.map((boardCell, colIndex) => {
+          const { y, x, isRevealed, didBust, minesNeighbor } = boardCell;
           return (
             <Cell
               key={`cell_${rowIndex}_${colIndex}`}
-              onClick={() => {
-                onCellLeftClick(boardCell);
-              }}
-              onContextMenu={(e) => {
-                e.preventDefault();
-                onCellRightClick(boardCell);
-              }}
-              {...boardCell}
+              y={y}
+              x={x}
+              isRevealed={isRevealed}
+              didBust={didBust}
+              minesNeighbor={minesNeighbor}
             >
               {getCellContent(boardCell, isGameModeDevelop)}
             </Cell>
@@ -141,29 +149,4 @@ const Container = styled.section`
   display: grid;
   grid-template-columns: repeat(${({ col }) => col}, 1fr);
   grid-template-rows: repeat(${({ row }) => row}, 1fr);
-`;
-
-const Cell = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 25px;
-  height: 25px;
-  font-size: 1rem;
-  background-color: #ccc;
-  overflow: hidden;
-
-  // 칸의 상태에 따라 칸의 스타일링을 달리 하는 부분
-  ${({ isRevealed }) =>
-    isRevealed &&
-    `
-    background-color: #caddff;
-    border: 1px solid #000;
-  `}
-  ${({ didBust }) =>
-    didBust &&
-    `
-    background-color: red;
-  `}
-  ${({ minesNeighbor }) => `color: ${getCellTextColor(minesNeighbor)};`}
 `;
