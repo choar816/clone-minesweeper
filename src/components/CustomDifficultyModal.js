@@ -59,9 +59,9 @@ export const CustomDifficultyModal = ({ isModalOn, setIsModalOn }) => {
       <Section isModalOn={isModalOn}>
         <h3>난이도 직접 설정하기</h3>
         {DIFFICULTY_PROPERTIES.map((property) => (
-          <div>
+          <div key={`dp_${property}`}>
             <label htmlFor={property}>{property}</label>
-            <Input name={property} id={property} onChange={onInputChange} addOnBefore={"asdf"} />
+            <Input name={property} id={property} onChange={onInputChange} />
           </div>
         ))}
         {errorMessage.length !== 0 && <p className="error">{errorMessage}</p>}

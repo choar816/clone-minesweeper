@@ -114,7 +114,6 @@ export const Board = () => {
         let y = e.target.getAttribute("y");
         let x = e.target.getAttribute("x");
         onCellLeftClick(boardArray[y][x]);
-        console.log(boardArray[y][x]);
       }}
       onContextMenu={(e) => {
         e.preventDefault();
