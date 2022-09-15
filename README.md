@@ -1,9 +1,15 @@
 # Minesweeper
+[![Deploy](https://github.com/joe-brothers/clone-minesweeper/actions/workflows/deploy.yml/badge.svg)](https://github.com/joe-brothers/clone-minesweeper/actions/workflows/deploy.yml)
 
 지뢰찾기를 클론한 프로젝트입니다.
 
 ## 사용 기술
-- `React`, `JavaScript`, `Redux Toolkit`, `Styled Components`, `Ant Design`
+![React](https://img.shields.io/badge/React-61DAFB?logo=React&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=JavaScript&logoColor=black)
+![Redux Toolkit](https://img.shields.io/badge/Redux_Toolkit-764ABC?logo=Redux)
+![Styled Components](https://img.shields.io/badge/styled--components-DB7093?logo=styled-components&logoColor=white)
+![Ant Design](https://img.shields.io/badge/Ant_Design-0170FE?logo=AntDesign)
+
 
 ## 과제 설명
 - 지뢰찾기 게임입니다.
