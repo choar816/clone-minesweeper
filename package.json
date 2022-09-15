@@ -1,7 +1,7 @@
 {
   "name": "clone-minesweeper",
   "version": "0.1.0",
-  "private": false,
+  "private": true,
   "homepage": "https://choar816.github.io/clone-minesweeper",
   "dependencies": {
     "@fireworks-js/react": "^2.0.2",
