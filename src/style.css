@@ -26,11 +26,16 @@ body {
   font-size: 1.1rem;
 }
 
-main {
+#root {
+  position: relative;
+  margin: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 20px;
+  padding-top: 40px;
   gap: 20px;
+  overflow: scroll;
 }
 
 button,

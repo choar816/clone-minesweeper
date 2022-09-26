@@ -10,7 +10,7 @@ import "./style.css";
 
 function App() {
   return (
-    <main>
+    <>
       <GameModeSwitch />
       <GameContainer>
         <GameHeader>
@@ -21,7 +21,7 @@ function App() {
         <Board />
         <DifficultyTab />
       </GameContainer>
-    </main>
+    </>
   );
 }
 
@@ -33,6 +33,7 @@ const GameContainer = styled.section`
   align-items: center;
   gap: 10px;
   padding: 10px;
+  margin: auto;
   background-color: #fff;
   border-radius: 10px;
   box-shadow: rgb(0 0 0 / 10%) 0px 0px 10px 5px;
