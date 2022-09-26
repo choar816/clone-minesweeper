@@ -1,5 +1,5 @@
 # Minesweeper
-[![Deploy](https://github.com/joe-brothers/clone-minesweeper/actions/workflows/deploy.yml/badge.svg)](https://github.com/joe-brothers/clone-minesweeper/actions/workflows/deploy.yml)
+[![Deploy](https://github.com/joe-brothers/minesweeper/actions/workflows/deploy.yml/badge.svg)](https://github.com/joe-brothers/minesweeper/actions/workflows/deploy.yml)
 
 지뢰찾기를 클론한 프로젝트입니다.
 
