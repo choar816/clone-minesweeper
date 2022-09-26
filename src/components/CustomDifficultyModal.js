@@ -29,23 +29,23 @@ export const CustomDifficultyModal = ({ isModalOn, setIsModalOn }) => {
   const onButtonClick = () => {
     const { width, height, mine } = difficultyState;
     if (isNaN(width) || isNaN(height) || isNaN(mine)) {
-      setErrorMessage("모든 칸에 숫자를 입력하세요.");
+      setErrorMessage("Please enter number in every field.");
       return;
     }
     if (width < 0 || height < 0 || mine < 0) {
-      setErrorMessage("음수를 입력하면 안됩니다.");
+      setErrorMessage("You can't enter negative number.");
       return;
     }
     if (width > 100 || height > 100) {
-      setErrorMessage("width, height는 100을 초과할 수 없습니다.");
+      setErrorMessage("Width and height cannot exceed 100.");
       return;
     }
     if (mine >= width * height) {
-      setErrorMessage(`지뢰는 width * height 값(${width * height})보다 적게 있어야 합니다.`);
+      setErrorMessage(`Mines must be less than the width * height value(${width * height}).`);
       return;
     }
     if (mine === 0) {
-      setErrorMessage("지뢰는 한 개 이상 있어야 합니다.");
+      setErrorMessage("There must be at least one mine.");
       return;
     }
     setErrorMessage("");
@@ -57,7 +57,7 @@ export const CustomDifficultyModal = ({ isModalOn, setIsModalOn }) => {
     <>
       <Background isModalOn={isModalOn} onClick={() => setIsModalOn(false)} />
       <Section isModalOn={isModalOn}>
-        <h3>난이도 직접 설정하기</h3>
+        <h3>Set your own difficulty</h3>
         {DIFFICULTY_PROPERTIES.map((property) => (
           <div key={`dp_${property}`}>
             <label htmlFor={property}>{property}</label>
@@ -66,7 +66,7 @@ export const CustomDifficultyModal = ({ isModalOn, setIsModalOn }) => {
         ))}
         {errorMessage.length !== 0 && <p className="error">{errorMessage}</p>}
         <Button type="primary" onClick={onButtonClick}>
-          설정
+          Set up
         </Button>
       </Section>
     </>
@@ -74,7 +74,7 @@ export const CustomDifficultyModal = ({ isModalOn, setIsModalOn }) => {
 };
 
 const Section = styled.section`
-  width: 280px;
+  width: 300px;
   position: fixed;
   top: 50%;
   left: 50%;

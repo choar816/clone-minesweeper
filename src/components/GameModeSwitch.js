@@ -9,7 +9,7 @@ export const GameModeSwitch = () => {
 
   return (
     <div>
-      개발모드 스위치
+      Development Mode Switch
       <Switch onChange={(checked) => dispatch(setIsGameModeDevelop(checked))} style={{ marginLeft: 10 }} />
     </div>
   );
