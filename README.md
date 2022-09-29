@@ -4,7 +4,7 @@
 지뢰찾기를 클론한 프로젝트입니다.
 
 ## 사용 기술
-![React](https://img.shields.io/badge/React-61DAFB?logo=React&logoColor=white)
+![React](https://img.shields.io/badge/React-61DAFB?logo=React&logoColor=black)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=JavaScript&logoColor=black)
 ![Redux Toolkit](https://img.shields.io/badge/Redux_Toolkit-764ABC?logo=Redux)
 ![Styled Components](https://img.shields.io/badge/styled--components-DB7093?logo=styled-components&logoColor=white)
