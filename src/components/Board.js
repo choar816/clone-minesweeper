@@ -39,7 +39,7 @@ export const Board = () => {
   const checkWin = () => {
     // 연 칸의 개수 + 지뢰의 개수 = 전체 칸의 개수인 경우
     // 게임을 이기고, 모든 지뢰 칸에 깃발이 꼽힌다.
-    if (revealedCells + difficulty.mine === height * width) {
+    if (!isLost && revealedCells + difficulty.mine === height * width) {
       dispatch(winGame());
       dispatch(flagAllMines());
     }
